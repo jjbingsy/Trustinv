@@ -1,5 +1,4 @@
 from trustmod.utility import parseTitle
-#from trustmod.utility.string_mainpulation import parseTitle as pt
 from trustmod.test import test1
 
 if __name__ == "__main__":
