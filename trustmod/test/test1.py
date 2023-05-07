@@ -3,4 +3,4 @@
 from ..utility import parseTitle as ps
 
 def test1(string):
-    print ( ps(string))
+    print ( ps(string), "k")
