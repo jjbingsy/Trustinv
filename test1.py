@@ -1,1 +1,1 @@
-print ("Jesus is lord!")
+print ("Jesus is lordy!")
