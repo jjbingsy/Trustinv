@@ -1,1 +1,1 @@
-print ("mother fucker!")
+print ("Jesus is lord!")
