@@ -1,6 +1,3 @@
-from trustmod.classes   import GuruFilm, JavFilm, MissFilm, Idol
+from trustmod.classes   import GuruFilm, JavFilm, MissFilm, Idol       
 
-ff = GuruFilm(name="SSIS-715")
-print (ff.description, ff.film_link)
-for f in ff.idols:
-    print (f.name)
+# conda env export > <env_name>.yml
