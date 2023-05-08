@@ -1,4 +1,5 @@
 import sqlite3
+from ..utility import sort_words_alphabetically
 from ..vars.env_001 import IDOLSDB_PATH
 
 
@@ -15,7 +16,7 @@ class Idol:
 
 
     def __init__(self, name, link="", image_link=None, image_content=None, shared_key=0) -> None:        
-        self.name = name
+        self.name = sort_words_alphabetically(name)
         self.link = link
         self.image_link = image_link
         self.image_content = image_content
