@@ -17,5 +17,5 @@ if __name__ == "__main__":
     print (jav.description, jav.film_link)
     miss = MissFilm(name="JUL-106")
     print (miss.description, miss.film_link)
-    checkInFilms()
-    sortFilms()
+    #checkInFilms()
+    #sortFilms()
