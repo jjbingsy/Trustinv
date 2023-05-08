@@ -18,4 +18,4 @@ if __name__ == "__main__":
     miss = MissFilm(name="JUL-106")
     print (miss.description, miss.film_link)
     #checkInFilms()
-    #sortFilms()
+    sortFilms()
