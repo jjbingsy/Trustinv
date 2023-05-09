@@ -38,4 +38,11 @@ def get_content(url, name, store=True, force=False):
     conn.close()
     return content
 
+def consolidate_idols(cursor, idols, conn):
+    new_key = idols[0][4]
+    for idol in idols:
+        if idol[3] and idol[3] != new_key:
+            cursor.execute("""update idols set shared_key = ? where shared_key = ?""", (new_key, idol[3]))
+        cursor.execute("""update idols set shared_key = ? where link = ?""", (new_key, idol[0]))
+    conn.commit()
 

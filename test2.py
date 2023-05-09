@@ -9,7 +9,7 @@ from trustmod.main import checkInFilms, sortFilms
 if __name__ == "__main__":
     images = Path(IMAGE_DIRECTORY)
     for image in images.iterdir():
-        image.stem
+        print (image.stem)
 
 
 
