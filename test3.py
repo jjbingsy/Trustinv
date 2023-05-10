@@ -92,7 +92,7 @@ for film_name_tuple in film_names:
             combined_idols = combine_short_sublists(grouped_idols)
             
             if equal_length_sublists(combined_idols):
-                print(f"Film: {film_name} is matched")
+                #print(f"Film: {film_name} is matched")
                 for idol in combined_idols:
                     if len(idol) == 3 and False:
                         print(f"{len(idol)} Idol_group: {[  (i[1], i[2]) for i in idol  ]}")
