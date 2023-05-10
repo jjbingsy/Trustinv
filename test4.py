@@ -171,6 +171,7 @@ for film_name_tuple in film_names:
         cursor.execute(query_idols, (film_name,))
         idols = cursor.fetchall()
         print (idols)
+        input ("Press Enter to continue...")
 
 ####
 
