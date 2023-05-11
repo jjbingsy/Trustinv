@@ -4,9 +4,18 @@ from datetime import datetime
 
 from trustmod.utility import group_match_strings
 from trustmod.utility import consolidate_idols
+from trustmod.utility import consolidate_idols_withoutconn
+from trustmod.utility import process_lists
 
 
 from trustmod.vars.env_001 import IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT_GOOGLE, FILMSOURCES_PATH, IDOLSDB_PATH, IDOLS2DB_PATH
+
+
+
+def my_display (lst):
+    #return lst
+    return [(x[1], x[2], x[3]) for x in lst]
+
 
 def compare_idol_v1 (idol1, idol2):
     if idol1[3] and idol2[3] and idol1[3] == idol2[3]:
@@ -29,9 +38,10 @@ def sort_idols(idols, modified_fuzzratio):
     return sorted_results
 
 def isolate_idols(x, group):
-    for idol in group:
-        if idol[1] == x[1]:
-            return False
+    if x[1]:
+        for idol in group:
+            if idol[1] and idol[1] == x[1]:
+                return False
     return True
 
 
@@ -105,7 +115,6 @@ def combine_short_sublists(list_of_lists):
     return combined_sublists
 
 def same_shared_key(s, t):
-
     return s[3] and t[3] and s[3] == t[3]
 
 def grab_idol_name(idol):
@@ -127,13 +136,22 @@ def equal_length_sublists(list_of_lists):
 conn = sqlite3.connect(IDOLSDB_PATH)
 cursor = conn.cursor()
 
+cnt2 = 2
+
 # Query to get film names with 3 film sources and all 3 having equal idol_counts > 0
-query = """
+queryAll = """
 SELECT films.name, film_sources.idols_count 
 FROM films
 INNER JOIN film_sources ON films.name = film_sources.film_name
 GROUP BY films.name
-HAVING COUNT(film_sources.source_link) = 3 AND MIN(film_sources.idols_count) > 0 AND MIN(film_sources.idols_count) == MAX(film_sources.idols_count)
+"""
+
+query = f"""
+SELECT films.name, film_sources.idols_count 
+FROM films
+INNER JOIN film_sources ON films.name = film_sources.film_name
+GROUP BY films.name
+HAVING COUNT(film_sources.source_link) = {cnt2} AND MIN(film_sources.idols_count) > 0 AND MIN(film_sources.idols_count) == MAX(film_sources.idols_count)
 """
 query2 = """
 SELECT film_sources.release_date
@@ -157,7 +175,7 @@ for film_name_tuple in film_names:
             
                 max_days = max(max_days, abs((datetime.strptime(d1[0], "%Y-%m-%dT%H:%M:%S").date() - datetime.strptime(d2[0], "%Y-%m-%dT%H:%M:%S").date()).days))
                 #print (d1[0], d2[0])
-    if max_days > 30:
+    if True:
         print (f"{film_name} {max_days}")
 ####
         query_idols = """
@@ -170,12 +188,35 @@ for film_name_tuple in film_names:
             # Execute the query and fetch associated idols
         cursor.execute(query_idols, (film_name,))
         idols = cursor.fetchall()
-        print (idols)
-        input ("Press Enter to continue...")
+        y = [list(a) for a in idols]
+        groups = group_best_matches ( y, cnt2)
+        for i, group in enumerate( groups):
+            # if all have the same shared key pop it out
+            truth = True
+            for g in group:
+                for h in group:
+                    truth = truth and same_shared_key(g, h)
+            if truth:
+                groups.pop(i)
+        if max_days <= 30:
+            for group in groups:
+                #print ([  (i[1], i[2]) for i in group  ])
+                if len(group) == cnt2:
+                    consolidate_idols(cursor, group, conn)
+                else:
+                    print (f"{film_name} Not enough matches {group}")
+                    process_lists([group], consolidate_idols_withoutconn, my_display)
+                    #consolidate_idols(cursor, group, conn)
+
+        else:
+
+            # FOR GREATER THAN 30 DAYS
+            if groups:
+                process_lists(groups, consolidate_idols_withoutconn, my_display)
 
 ####
 
-
+# SELECT DISTINCT film_name FROM film_idols JOIN idols ON film_idols.idol_link = idols.link WHERE idols.shared_key = 71;
 
 if False:
 

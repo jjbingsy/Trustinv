@@ -46,3 +46,16 @@ def consolidate_idols(cursor, idols, conn):
         cursor.execute("""update idols set shared_key = ? where link = ?""", (new_key, idol[0]))
     conn.commit()
 
+def consolidate_idols_withoutconn(idols):
+    conn = sqlite3.connect(IDOLSDB_PATH)
+    cursor = conn.cursor()
+
+    new_key = idols[0][4]
+    for idol in idols:
+        if idol[3] and idol[3] != new_key:
+            cursor.execute("""update idols set shared_key = ? where shared_key = ?""", (new_key, idol[3]))
+        cursor.execute("""update idols set shared_key = ? where link = ?""", (new_key, idol[0]))
+    for idol in idols:
+        idol[3] = new_key
+    conn.commit()
+    conn.close()
