@@ -142,14 +142,11 @@ def equal_length_sublists(list_of_lists):
 conn = sqlite3.connect(IDOLSDB_PATH)
 cursor = conn.cursor()
 
-cnt2 = 2
+cnt2 = 3
 
 # Query to get film names with 3 film sources and all 3 having equal idol_counts > 0
 queryAll = """
-SELECT films.name, film_sources.idols_count 
-FROM films
-INNER JOIN film_sources ON films.name = film_sources.film_name
-GROUP BY films.name
+select distinct fi.film_name, i.name from film_idols fi join idols i on fi.idol_link = i.link where i.shared_key is null;
 """
 
 query = f"""
@@ -167,21 +164,48 @@ WHERE FILMS.name = ?
 """
 
 # Execute the query and fetch film names
-cursor.execute(query)
+cursor.execute(queryAll)
 film_names = cursor.fetchall()
 
 # Loop through film names
 for film_name_tuple in film_names:
     film_name = film_name_tuple[0]
-    #print(f"Film: {film_name}")
+    print(f"Film: {film_name} idol missing {film_name_tuple[1]}")
     release_dates = cursor.execute(query2, (film_name,)).fetchall()
     max_days = 0
     for d1 in release_dates:
         for d2 in release_dates:
             
                 max_days = max(max_days, abs((datetime.strptime(d1[0], "%Y-%m-%dT%H:%M:%S").date() - datetime.strptime(d2[0], "%Y-%m-%dT%H:%M:%S").date()).days))
-                #print (d1[0], d2[0])
-    if True:
+    print (f"{release_dates}")
+    print (f"{film_name} {max_days}")
+    query_idols = """
+        SELECT idols.*, idols.rowid
+        FROM idols
+        INNER JOIN film_idols ON idols.link = film_idols.idol_link
+        WHERE film_idols.film_name = ?
+        """
+
+        # Execute the query and fetch associated idols
+    cursor.execute(query_idols, (film_name,))
+    idols = cursor.fetchall()
+    y = [list(a) for a in idols]
+    groups = group_best_matches ( y, cnt2)
+    
+    if len(groups) > 1:
+        for i, group in enumerate( groups):
+            # if all have the same shared key pop it out
+            truth = True
+            for g in group:
+                for h in group:
+                    truth = truth and same_shared_key(g, h)
+            if truth:
+                groups.pop(i)
+    process_lists(groups, consolidate_idols_withoutconn, my_display)
+                
+
+
+    if False:
         print (f"{film_name} {max_days}")
 ####
         query_idols = """

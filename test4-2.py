@@ -10,13 +10,7 @@ from trustmod.utility import process_lists
 
 from trustmod.vars.env_001 import IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT_GOOGLE, FILMSOURCES_PATH, IDOLSDB_PATH, IDOLS2DB_PATH
 
-# THINGS TO DO
-# SELECT a.name, b.link, a.link, b.shared_key FROM idols a JOIN idols b ON a.name = b.name AND a.shared_key IS NULL and b.shared_key is not null;
-# SELECT a.name, b.link, a.link, b.shared_key FROM idols a JOIN idols b ON a.name = b.name AND a.shared_key <> b.shared_key;
-# SELECT NAME, count (name) cnt from idols group by name having shared_key is null and cnt > 1;
-# SELECT NAME, count (name) cnt from idols group by name having shared_key is null and cnt = 1;
-# SELECT NAME cnt from idols group by name having shared_key is null and cnt = 1
-# select fi.film_name, i.link, i.name, i.shared_key from film_idols fi join idols i on fi.idol_link = i.link where i.link in (SELECT link cnt from idols group by name having shared_key is null and cnt > 1);
+
 
 def my_display (lst):
     #return lst
