@@ -1,4 +1,6 @@
 from fuzzywuzzy import fuzz
+import webbrowser
+from trustmod.main import sortSpecificFilm
 #from fuzzywuzzy import process
 
 def group_match_strings(strings, funcc, threshold=85, func2=None):
@@ -28,7 +30,7 @@ def group_match_strings(strings, funcc, threshold=85, func2=None):
 
     return groups
 
-def process_lists(lists, process, display):
+def process_lists(lists, process, display, film_name=None):
     while True:
         # Display lists with their indexes
         print("Lists:")
@@ -47,6 +49,15 @@ def process_lists(lists, process, display):
                     lists.append([item])
             else:
                 print("Invalid index.")
+        elif action == "x":
+            if film_name:
+                sortSpecificFilm(film_name)
+            break
+        elif action == "o":
+            index = int(input("Enter the index of the list you want to split: "))
+            if 0 <= index < len(lists):
+                for item in lists[index]:
+                    webbrowser.open(item[0])
         elif action == "j":
             # Join two lists together
             index1 = int(input("Enter the index of the first list to join: "))

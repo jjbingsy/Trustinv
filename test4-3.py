@@ -136,14 +136,14 @@ def equal_length_sublists(list_of_lists):
 conn = sqlite3.connect(IDOLSDB_PATH)
 cursor = conn.cursor()
 
-cnt2 = 3
+cnt2 = 2
 
 # Query to get film names with 3 film sources and all 3 having equal idol_counts > 0
 queryAll = """
 SELECT films.name, film_sources.idols_count 
 FROM films
 INNER JOIN film_sources ON films.name = film_sources.film_name
-GROUP BY films.name
+where films.name = "STARS-685"
 """
 
 query = f"""
@@ -205,14 +205,14 @@ for film_name_tuple in film_names:
                     consolidate_idols(cursor, group, conn)
                 else:
                     print (f"{film_name} Not enough matches {group}")
-                    process_lists([group], consolidate_idols_withoutconn, my_display)
+                    process_lists([group], consolidate_idols_withoutconn, my_display, film_name=film_name)
                     #consolidate_idols(cursor, group, conn)
 
         else:
 
             # FOR GREATER THAN 30 DAYS
             if groups:
-                process_lists(groups, consolidate_idols_withoutconn, my_display)
+                process_lists(groups, consolidate_idols_withoutconn, my_display, film_name=film_name)
 
 ####
 

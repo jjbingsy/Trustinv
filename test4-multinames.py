@@ -199,7 +199,7 @@ for film_name_tuple in film_names:
                 truth = truth and same_shared_key(g, h)
         if truth:
             groups.pop(i)
-    process_lists(groups, consolidate_idols_withoutconn, my_display)
+    process_lists(groups, consolidate_idols_withoutconn, my_display, film_name=film_name)
                 
 
 

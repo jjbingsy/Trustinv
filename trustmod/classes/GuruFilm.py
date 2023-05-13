@@ -97,7 +97,7 @@ class GuruFilm(Film):
         for i in idols:
             self.idols.append(Idol(i.string.strip(), i['href']))
 
-    def __init__(self, page=None, file=None, name=None, fixed_text=None, store=True):
+    def __init__(self, page=None, file=None, name=None, fixed_text=None, store=True, force=False):
         self.idols = []
         self.content = None
         #self.image_link = None already in Film
@@ -116,14 +116,14 @@ class GuruFilm(Film):
                 self.__initializeFilm(self.content)
         elif name:
             href = f"https://jav.guru/?s={name}"
-            qcontent = get_content(href, name, store=store)      
+            qcontent = get_content(href, name, store=store, force=force)      
             if qcontent:      
                 soup = bs4(qcontent, 'lxml')
                 films = soup.find_all("h2")
                 #self.description = None
                 if films[0].a:
                     href2 = films[0].a["href"]
-                    self.content = get_content(href2, name, store=store)            
+                    self.content = get_content(href2, name, store=store, force=force)            
                     #store all new to proper store of site pick-up htmls
                     self.__initializeFilm(self.content)
                 else:

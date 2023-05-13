@@ -17,5 +17,6 @@ if __name__ == "__main__":
     print (jav.description, jav.film_link)
     miss = MissFilm(name="JUL-106")
     print (miss.description, miss.film_link)
-    #checkInFilms()
+    checkInFilms()
     sortFilms()
+    print (IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT_GOOGLE, FILMSOURCES_PATH, IDOLSDB_PATH, IDOLS2DB_PATH)

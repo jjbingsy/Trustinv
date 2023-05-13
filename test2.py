@@ -1,11 +1,13 @@
 import sqlite3
 from pathlib import Path
-from trustmod.classes import GuruFilm, JavFilm, MissFilm, Idol
-from trustmod.utility import parseTitle
+from trustmod.classes import JavFilm
+#from trustmod.utility import parseTitle
 from trustmod.vars.env_001 import IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT_GOOGLE, FILMSOURCES_PATH, IDOLSDB_PATH, IDOLS2DB_PATH
-from trustmod.main import checkInFilms, sortFilms
-from trustmod.utility import process_lists
-from trustmod.utility import consolidate_idols_withoutconn 
+#from trustmod.main import checkInFilms, sortFilms
+#from trustmod.utility import process_lists
+#from trustmod.utility import consolidate_idols_withoutconn 
+#from trustmod.main import sortSpecificFilm
+
 
 
 def my_process (list):
@@ -42,7 +44,10 @@ if __name__ == "__main__":
     print (y)
     r = [y]#print (y)
     print (r)
-    process_lists([y], consolidate_idols_withoutconn, my_display)
+    #sortSpecificFilm("DLDSS-100")
+    #i = GuruFilm(name="MEYD-421")
 
+    print (2)
+    
 
     
