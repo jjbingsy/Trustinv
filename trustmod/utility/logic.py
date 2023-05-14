@@ -1,3 +1,5 @@
+import webbrowser
+
 from fuzzywuzzy import fuzz
 #from fuzzywuzzy import process
 
@@ -47,6 +49,11 @@ def process_lists(lists, process, display):
                     lists.append([item])
             else:
                 print("Invalid index.")
+        elif action == "o":
+            index = int(input("Enter the index of the list you want to split: "))
+            if 0 <= index < len(lists):
+                for item in lists[index]:
+                    webbrowser.open(item[0])
         elif action == "j":
             # Join two lists together
             index1 = int(input("Enter the index of the first list to join: "))

@@ -88,7 +88,7 @@ class MissFilm (Film):
             for idol in idols:
                 self.add_idol(Idol(idol.string, link=idol["href"]))
 
-    def __init__(self, page=None, file=None, name=None, fixed_text=None, store=True):
+    def __init__(self, page=None, file=None, name=None, fixed_text=None, store=True, force=False):
         self.idols = []
         self.content = None
         #self.image_link = None already in Film
@@ -110,7 +110,7 @@ class MissFilm (Film):
             href = f"https://missav.com/en/{name.lower()}"
             headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36'}
             #response = requests.get(href, headers=headers)
-            qcontent = get_content(href, parseTitle(name.upper()), store=store)
+            qcontent = get_content(href, parseTitle(name.upper()), store=store, force=force)
             self.__initializeFilm(qcontent)
             
         elif fixed_text:

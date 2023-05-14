@@ -142,7 +142,7 @@ def equal_length_sublists(list_of_lists):
 conn = sqlite3.connect(IDOLSDB_PATH)
 cursor = conn.cursor()
 
-cnt2 = 2
+cnt2 = 3
 
 # Query to get film names with 3 film sources and all 3 having equal idol_counts > 0
 queryAll = """
