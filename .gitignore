@@ -5,6 +5,7 @@ __pycache__/
 
 #local env
 trustmod/vars/env_001.py
+.python-version
 
 # C extensions
 *.so
