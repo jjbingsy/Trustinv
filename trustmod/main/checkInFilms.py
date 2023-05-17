@@ -1,4 +1,5 @@
 from pathlib import Path
+import platform
 
 from ..vars.env_001 import IDOLSDB_PATH, FILMSOURCES_PATH, SIMLINK_DIRECTORY, IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT_GOOGLE
 from ..classes import GuruFilm, JavFilm, MissFilm, Idol
@@ -12,11 +13,15 @@ def checkInFilms():
 
         raw_path = line.strip()
         paths = Path (raw_path)
-        suffix = "-" + raw_path.replace(':/', '_') 
+        suffixrep = ":/"
+        if platform.system() == "Linux":
+            suffixrep = "/"
+        suffix = "-" + raw_path.replace(suffixrep, '_') 
         for file in paths.iterdir():
             if file.suffix.lower() in ['.mp4', '.wmv', '.mkv', '.avi']:
                 newfile = dest / (parseTitle(file.stem) + suffix + file.suffix)
                 if not newfile.exists():
+                    print (file)
                     newfile.symlink_to(file)
                 sym_files.add(parseTitle( file.stem).upper())
                         
