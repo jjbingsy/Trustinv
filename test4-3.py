@@ -4,7 +4,7 @@ from datetime import datetime
 
 from trustmod.utility import group_match_strings
 from trustmod.utility import consolidate_idols
-from trustmod.utility import consolidate_idols_withoutconn
+#from trustmod.utility import consolidate_idols_withoutconn
 from trustmod.utility import process_lists
 
 
@@ -12,9 +12,9 @@ from trustmod.vars.env_001 import IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT
 
 
 
-def my_display (lst):
-    #return lst
-    return [(x[1], x[2], x[3]) for x in lst]
+# def my_display (lst):
+#     #return lst
+#     return [(x[1], x[2], x[3]) for x in lst]
 
 
 def compare_idol_v1 (idol1, idol2):
@@ -205,14 +205,14 @@ for film_name_tuple in film_names:
                     consolidate_idols(cursor, group, conn)
                 else:
                     print (f"{film_name} Not enough matches {group}")
-                    process_lists([group], consolidate_idols_withoutconn, my_display)
+                    process_lists([group])
                     #consolidate_idols(cursor, group, conn)
 
         else:
 
             # FOR GREATER THAN 30 DAYS
             if groups:
-                process_lists(groups, consolidate_idols_withoutconn, my_display)
+                process_lists(groups)
 
 ####
 

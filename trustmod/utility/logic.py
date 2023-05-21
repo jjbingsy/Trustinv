@@ -1,4 +1,5 @@
 import webbrowser
+from .contents import consolidate_idols_withoutconn as consolidate_idols_withoutconn_logic, my_display as my_display_logic
 
 from fuzzywuzzy import fuzz
 #from fuzzywuzzy import process
@@ -30,7 +31,7 @@ def group_match_strings(strings, funcc, threshold=85, func2=None):
 
     return groups
 
-def process_lists(lists, process, display):
+def process_lists(lists, process=consolidate_idols_withoutconn_logic, display=my_display_logic):
     while True:
         # Display lists with their indexes
         print("Lists:")
