@@ -16,6 +16,8 @@ from trustmod.vars.env_001 import IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT
 #     #return lst
 #     return [(x[1], x[2], x[3]) for x in lst]
 
+from trustmod.classes import Idol_struct as Idol
+
 
 def compare_idol_v1 (idol1, idol2):
     if idol1[3] and idol2[3] and idol1[3] == idol2[3]:
@@ -24,9 +26,17 @@ def compare_idol_v1 (idol1, idol2):
         return -100
     else:
         return fuzz.ratio(idol1, idol2)
+    
+def compare_idol_v2 (idol1, idol2):
+    if idol1.shared_key and idol2.shared_key and idol1.shared_key == idol2.shared_key:
+        return 100
+    elif idol1.source_id == idol2.source_id:
+        return -100
+    else:
+        return fuzz.ratio(idol1.name, idol2.name)
 
 
-def sort_idols(idols, modified_fuzzratio):
+def sort_idols(idols, modified_fuzzratio=compare_idol_v2):
     results = []
 
     for i, idol1 in enumerate(idols):
