@@ -12,6 +12,7 @@ from datetime import datetime
 from dateutil.parser import parse
 
 from ..vars.env_001 import IDOLSDB_PATH as IDOLSDB_PATH_CONTENTS, FILMSOURCES_PATH as FILMSOURCES_PATH_CONTENTS, USER_AGENT_GOOGLE as USER_AGENT_GOOGLE_CONTENTS
+from ..classes.Idol_struct import Idol_struct as Idol_contents
 # from ..vars.env_001 import IDOLSDB_PATH, FILMSOURCES_PATH, SIMLINK_DIRECTORY, IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT_GOOGLE
 # from ..vars.env_001 import IDOLSDB_PATH, FILMSOURCES_PATH, SIMLINK_DIRECTORY, IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT_GOOGLE
 
@@ -62,6 +63,25 @@ def consolidate_idols_withoutconn(idols):
         idol[3] = new_key
     conn.commit()
     conn.close()
+
+def consolidate_idols_withoutconn_idol_struct(idols: Idol_contents) -> None:
+    conn = sqlite3.connect(IDOLSDB_PATH_CONTENTS)
+    cursor = conn.cursor()
+
+    new_key = idols[0].rowid
+    for idol in idols:
+        if idol.shared_key:
+            cursor.execute("""update idols set shared_key = ? where shared_key = ?""", (new_key, idol.shared_key))
+        cursor.execute("""update idols set shared_key = ? where link = ?""", (new_key, idol.link))
+
+    for idol in idols:
+        idol.shared_key = new_key
+    conn.commit()
+    conn.close()
+
+
+
+
 
 def my_display (lst):
     #return lst

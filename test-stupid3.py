@@ -6,6 +6,9 @@ from trustmod.classes import Idol_struct
 from pathlib import Path
 import sqlite3
 
+from trustmod.utility import consolidate_idols_withoutconn_idol_struct as consolidate_idols
+
+
 # def u (x, y):
 #     print (x, y)
 
@@ -188,14 +191,28 @@ def youpunk(idols, counter=0):
         print (f"{counter} - {new_counter}")
 
 
+        txt = ""
 
         if counter > new_counter:
             new_counter = counter #maybe-pause
-            input()
+            if len(to_be_matched) > 1:
+                if not (to_be_matched[0].shared_key and to_be_matched[1].shared_key and to_be_matched[0].shared_key == to_be_matched[1].shared_key):
+                    print (f"socore: {compare_idol_v2(to_be_matched[0], to_be_matched[1] ) }")
+                    for i in to_be_matched:
+                        txt = txt + f"{i.name} {i.shared_key}: "
+                    print(txt)
+                    f = input()
+                    if f == "a":
+                        consolidate_idols(to_be_matched)
+                        txt = ""
+                        for i in to_be_matched:
+                            txt = txt + f"{i.name} {i.shared_key}: "
+                        print(txt)
+                        input()
         else:
-            txt = ""
+            consolidate_idols(to_be_matched)
             for i in to_be_matched:
-                txt = txt + f"{i.name} {i.source_id}: "
+                txt = txt + f"{i.name} {i.shared_key}: "
             print(txt)
             #consodilate best
 
