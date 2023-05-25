@@ -54,8 +54,6 @@ MDScreen:
                     md_bg_color: "#e7e4c0"
                     specific_text_color: "#4a4939"
                     left_action_items: [["menu", lambda x: app.root.ids.nav_drawer.set_state("open")],["dots-vertical", lambda x: app.root.callback(x)],["dots-vertical", lambda x: app.root.callbackx(x)]]
-                MDBoxLayout:
-                    MyRec:
 
         MDNavigationDrawer:
             id: nav_drawer
