@@ -57,7 +57,8 @@ MDScreen:
                     md_bg_color: "#e7e4c0"
                     specific_text_color: "#4a4939"
                     left_action_items: [["menu", lambda x: nav_drawer.set_state("open")],["dots-vertical", lambda x: app.callback(x)  ],["dots-vertical", lambda x: app.callbackx(x)  ]]
-                MyWidget:
+                MDWidget:
+                    MyRec:
 
         MDNavigationDrawer:
             id: nav_drawer

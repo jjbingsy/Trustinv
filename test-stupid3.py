@@ -2,7 +2,7 @@ from datetime import datetime
 from fuzzywuzzy import fuzz
 import sqlite3
 
-from trustmod.vars.env_001 import IDOLSDB_PATH as IDP
+from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD
 from trustmod.classes import Idol_struct
 from trustmod.utility import consolidate_idols_withoutconn_idol_struct as consolidate_idols
 
