@@ -89,6 +89,10 @@ class MyTile (MDSmartTile):
     texti = StringProperty('')
     act_option = StringProperty('')
     menu_items = ObjectProperty()
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        print (f"KKKKKKKKKKKKKKK {type(MDApp.get_running_app().myOp)}")
+
     def on_release(self, *args):
         if self.act_option == 'idol':
             MDApp.get_running_app().myOp.rc.jj(self.texti)

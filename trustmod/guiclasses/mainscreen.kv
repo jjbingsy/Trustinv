@@ -1,12 +1,33 @@
-MainWidget:
-    
+MDScreen:
+    MDNavigationLayout:
+        MDScreenManager:
+            MDScreen:
+                MyBoxLayout:
+                    orientation: 'vertical'
+                    MDTopAppBar:
+                        title: "Navigation Drawer"
+                        elevation: 4
+                        pos_hint: {"top": 1}
+                        md_bg_color: "#e7e4c0"
+                        specific_text_color: "#4a4939"
+                        left_action_items:
+                            [['menu', lambda x: nav_drawer.set_state("open")]]
 
-<MainWidget>:
-    MyButton:
-        text:'Hello World 3'
-        size: root.width/8, root.height/8
-        pos: root.width/8, root.height/8    
-    MyLabel:
-        text:'Hello World 2'
-        size: root.width/8, root.height/8
-        pos: root.width/8, root.height/2
+                    MyRec:
+                        id: rec
+                        viewclass: 'MyButton'
+                        MDRecycleGridLayout:
+                            id: rgg
+                            padding: ('0dp', '10dp', '0dp', '0dp')
+                            default_size: None, dp(340)
+                            default_size_hint: 1, None
+                            spacing: dp(4)
+                            cols: 5
+                            size_hint_y: None
+                            height: self.minimum_height
+                            orientation: 'lr-tb'
+        MDNavigationDrawer:
+            id: nav_drawer
+            radius: (0, 16, 16, 0)
+
+
