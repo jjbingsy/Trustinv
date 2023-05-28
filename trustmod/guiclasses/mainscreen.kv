@@ -4,7 +4,7 @@ MDScreen:
             MDScreen:
                 MyBoxLayout:
                     orientation: 'vertical'
-                    MDTopAppBar:
+                    MyBar:
                         title: "Navigation Drawer"
                         elevation: 4
                         pos_hint: {"top": 1}
@@ -12,15 +12,16 @@ MDScreen:
                         specific_text_color: "#4a4939"
                         left_action_items:
                             [['menu', lambda x: nav_drawer.set_state("open")]]
-
+                        right_action_items:
+                            [['star-outline', lambda x: app.msl.intial_data()], ['star-outline', lambda x: app.msl.intial_data(min_film_count=5, max_film_count=11)], ['star-outline', lambda x: app.msl.intial_data(min_film_count=3, max_film_count=6)], ['star', lambda x: app.msl.intial_data(min_film_count=2, max_film_count=4)], ['star', lambda x: app.msl.intial_data(min_film_count=1, max_film_count=3)], ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)] ]
                     MyRec:
                         id: rec
-                        viewclass: 'MyButton'
+                        viewclass: 'MyTile'
                         MDRecycleGridLayout:
                             id: rgg
                             padding: ('0dp', '10dp', '0dp', '0dp')
-                            default_size: None, dp(340)
-                            default_size_hint: 1, None
+                            default_size: dp(510), dp(344)
+                            default_size_hint: None, None
                             spacing: dp(4)
                             cols: 5
                             size_hint_y: None
@@ -29,5 +30,30 @@ MDScreen:
         MDNavigationDrawer:
             id: nav_drawer
             radius: (0, 16, 16, 0)
+
+<myTile>:
+    radius: 24
+    box_radius: [0, 0, 24, 24]
+    box_position: 'header'
+    box_color: 0, 0, 0, .8
+    padding: ('4dp', '20dp', '0dp', '0dp')
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size_hint: None, None
+    overlap: False
+    size: "320dp", "320dp"
+    MDIconButton:
+        on_release: app.msl.idols_choice(root)
+        icon: "heart-outline"    
+    MyLabel:
+        text: f"{root.texti} - {root.idol_name}"
+    MDIconButton:
+        icon: "play-outline" 
+        on_release: app.msl.playme2(root.texti)
+    MDIconButton:
+        icon: "heart-outline"    
+        on_release: app.msl.get_random_films_in_series()
+        
+
+
 
 

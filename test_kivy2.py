@@ -51,6 +51,22 @@ MDScreen:
             radius: (0, 16, 16, 0)
 
             ContentNavigationDrawer:
+<myTile>:
+    radius: 24
+    box_radius: [0, 0, 24, 24]
+    box_color: .9, .9, .9, .9
+    padding: ('4dp', '20dp', '0dp', '0dp')
+    pos_hint: {"center_x": .5, "center_y": .5}
+    size_hint: None, None
+    size: "320dp", "320dp"
+    
+    MDLabel:
+        box_color: 1,1,1,1
+        text_color: 0, 0, 1, 1
+        text: root.texti
+        bold: True
+        color: 1, 1, 1, 1
+        halign: "center"
 '''
 
 class MyOp():
@@ -91,7 +107,6 @@ class MyTile (MDSmartTile):
     menu_items = ObjectProperty()
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        print (f"KKKKKKKKKKKKKKK {type(MDApp.get_running_app().myOp)}")
 
     def on_release(self, *args):
         if self.act_option == 'idol':
