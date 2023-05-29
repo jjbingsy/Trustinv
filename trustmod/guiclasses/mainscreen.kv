@@ -13,7 +13,7 @@ MDScreen:
                         left_action_items:
                             [['menu', lambda x: nav_drawer.set_state("open")]]
                         right_action_items:
-                            [['star-outline', lambda x: app.msl.intial_data()], ['star-outline', lambda x: app.msl.intial_data(min_film_count=5, max_film_count=11)], ['star-outline', lambda x: app.msl.intial_data(min_film_count=3, max_film_count=6)], ['star', lambda x: app.msl.intial_data(min_film_count=2, max_film_count=4)], ['star', lambda x: app.msl.intial_data(min_film_count=1, max_film_count=3)], ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)] ]
+                            [['star-outline', lambda x: app.msl.intial_data()], ['star-outline', lambda x: app.msl.intial_data(min_film_count=5, max_film_count=11)], ['star-outline', lambda x: app.msl.intial_data(min_film_count=3, max_film_count=6)], ['star', lambda x: app.msl.intial_data(min_film_count=2, max_film_count=4)], ['star', lambda x: app.msl.intial_data(min_film_count=1, max_film_count=3)], ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)]  ]
                     MyRec:
                         id: rec
                         viewclass: 'MyTile'
@@ -45,13 +45,16 @@ MDScreen:
         on_release: app.msl.idols_choice(root)
         icon: "heart-outline"    
     MyLabel:
-        text: f"{root.texti} - {root.idol_name}"
+        text: f"{root.label}"
     MDIconButton:
         icon: "play-outline" 
-        on_release: app.msl.playme2(root.texti)
+        on_release: app.msl.playme2(root.film_name)
     MDIconButton:
         icon: "heart-outline"    
         on_release: app.msl.get_random_films_in_series()
+    MDIconButton:
+        icon: "dots-vertical"
+        on_release: root.change_idol()
         
 
 

@@ -8,10 +8,8 @@ from kivymd.uix.button import MDRectangleFlatButton
 from kivymd.uix.imagelist.imagelist import MDSmartTile
 from kivymd.uix.list.list import OneLineListItem
 from kivymd.uix.toolbar import MDTopAppBar
-
-
 from kivy.properties import StringProperty, NumericProperty
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, ListProperty
 
 from ..main import MainScreenLogic
 
@@ -30,23 +28,48 @@ class MyButton(MDRectangleFlatButton):
 
 
 class MyTile (MDSmartTile):
-    texti = StringProperty('')
+    idols = ListProperty([])
+    idol_index = NumericProperty(0)
     idol_name = StringProperty('')
     shared_key = NumericProperty(0)
+
+    film_name = StringProperty('')
+
+    label = StringProperty('still blank')
+
+
+    #texti = StringProperty('')
     description = StringProperty('')
     menu_items = ObjectProperty()
     series_link = StringProperty('')
     series_name = StringProperty('')
+
+    def change_idol(self, *args):
+        self.idol_index += 1
+
+    def on_idol_index(self, *args):
+        if self.idol_index >= len(self.idols):
+            self.idol_index = 0
+        self.label = f"{self.film_name} - {self.idols[self.idol_index][1]}"
+        self.idol_name = self.idols[self.idol_index][1]
+        self.shared_key = self.idols[self.idol_index][0]
+
+
+
     def __init__(self, **kwargs):
         super(MyTile, self).__init__(**kwargs)
-        # print (f"Source: {self.source} {self.idol_name} {self.act_option} ")
-        # for key, value in kwargs.items():
-        #     print(f"The key is {key} and the value is {value}")
-    # def on_kv_post(self, base_widget):
-    #     super(MyTile, self).on_kv_post(base_widget)
-    #     print(f'MyLabel created with text: {base_widget.source}')
-    def on_idol_name(self, instance, value):
-        print(f'MyLabel text changed to: {value}')    
+
+    def on_film_name(self, *args):
+        if self.idol_index >= len(self.idols):
+            self.idol_index = 0
+        self.label = f"{self.film_name} - {self.idols[self.idol_index][1]}"
+
+    def on_idols(self, *args):
+        if self.idols:
+            self.label = f"{self.film_name} - {self.idols[0][1]}"
+            self.idol_name = self.idols[0][1]
+            self.shared_key = self.idols[0][0]
+
     def on_release(self, *args):
         MDApp.get_running_app().msl.mybar.title = self.description
     #     MDApp.get_running_app().msl.playme2(self.texti)
