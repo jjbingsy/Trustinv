@@ -6,6 +6,7 @@ import threading
 from trustmod.classes import MissFilm as Guru
 
 from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, MEDIA_DIRECTORIES as MDD, SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2
+from trustmod.classes import MissFilm as MissFilm_msl
 
 
 class MainScreenLogic:
@@ -292,7 +293,16 @@ class MainScreenLogic:
         self.collector.data = collect
 
 
-
+    def getFilmData(self, film, idol=None, check_series=False):
+        conn2 = sqlite3.connect(IDP)
+        conn = sqlite3.connect(IDB2)
+        c = conn.cursor()
+        c.execute("select description, series_link, series_name from films where name = ?", (film,))
+        description = c.fetchone()[0]
+        series_link = c.fetchone()[1]
+        series_name = c.fetchone()[2]
+        if series_name is None and check_series:
+            film = MissFilm_msl(name=film)
 
 
         # q1 = '''
