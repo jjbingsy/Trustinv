@@ -12,17 +12,17 @@ noise = Path("C:\\Users\\Security\\documents\\josephsy\\github\\dat\\noise2")
 colors = Path("C:\\Users\\Security\\documents\\josephsy\\github\\dat\\colors2")
 
 
-for image in blur.iterdir():
-    newNoise = colors / (image.stem + '.jpg')
-    print (newNoise)
-    # Generate a single random RGB value
-    random_color = np.random.randint(0, 256, 3, dtype=np.uint8)
+# for image in blur.iterdir():
+#     newNoise = colors / (image.stem + '.jpg')
+#     print (newNoise)
+#     # Generate a single random RGB value
+#     random_color = np.random.randint(0, 256, 3, dtype=np.uint8)
 
-    # Create a 512x512 array filled with the random RGB value
-    random_array = np.full((512, 512, 3), random_color, dtype=np.uint8)
+#     # Create a 512x512 array filled with the random RGB value
+#     random_array = np.full((512, 512, 3), random_color, dtype=np.uint8)
 
-    # Create an image from the array
-    img = Image.fromarray(random_array)
+#     # Create an image from the array
+#     img = Image.fromarray(random_array)
 
 
 
@@ -34,7 +34,7 @@ for image in blur.iterdir():
 
     # Create an image from the array
     #img = Image.fromarray(random_array)
-    img.save(newNoise)
+    #img.save(newNoise)
 
 
 if False:
