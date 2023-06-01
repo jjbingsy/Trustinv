@@ -45,7 +45,7 @@ class MyTile (MDSmartTile):
     series_name = StringProperty('')
 
     def change_idol(self, *args):
-        self.idol_index += 1
+        self.idol_index += 1 
 
     def on_idol_index(self, *args):
         if self.idol_index >= len(self.idols):

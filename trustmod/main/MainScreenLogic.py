@@ -122,7 +122,7 @@ class MainScreenLogic:
 
     def intial_data(self, min_film_count=10, max_film_count=400):
         self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count)
-        #self.collector.data = self.get_film("DLDSS-181")
+        #self.collector.data = self.get_film("IPX-822") #DLDSS-181
 
     def get_film(self, film):
         conn = sqlite3.connect(IDP)

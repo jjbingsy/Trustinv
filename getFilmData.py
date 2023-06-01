@@ -45,29 +45,6 @@ c = conn.cursor()
 cr = conn2.cursor()
 crm = cnm.cursor()
 
-import sqlite3
-
-# Connect to the SQLite database
-
-# Create a cursor object
-
-# Create the tables if they do not exist
-# c.execute('''
-#     CREATE TABLE IF NOT EXISTS miss (
-#         link TEXT PRIMARY KEY,
-#         name TEXT,
-#         shared_key INTEGER
-#     )
-# ''')
-
-# c.execute('''
-#     CREATE TABLE IF NOT EXISTS jav (
-#         link TEXT PRIMARY KEY,
-#         name TEXT,
-#         shared_key INTEGER
-#     )
-# ''')
-
 
 c.execute('''
     CREATE TABLE IF NOT EXISTS SERIES (
