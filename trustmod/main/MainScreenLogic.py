@@ -121,10 +121,27 @@ class MainScreenLogic:
         self._collector = value
 
     def intial_data(self, min_film_count=10, max_film_count=400):
-        #self.collector.data = [{'source': 'i'}]
-        #self.container.clear_widgets()
-        #self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count ) #[{'text': str(x)} for x in range(50)]    
         self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count)
+        #self.collector.data = self.get_film("DLDSS-181")
+
+    def get_film(self, film):
+        conn = sqlite3.connect(IDP)
+        c = conn.cursor()
+        c.execute('''
+            select description
+            from films where name = ?''', (film,))
+        filmX = c.fetchone()
+        description = filmX[0]
+
+        c.execute('''select i.shared_key, i.name 
+            from film_idols fi join idols i on fi.idol_link = i.link 
+            where fi.film_name = ?''', (film,))
+        idols = c.fetchall()
+        conn.close()
+        idolsG = [(i[0], i[1]) for i in idols]
+        datas = []
+        datas.append ({'source': f'{IDD}/{film}.jpg', 'idols': idolsG,  'description' : description, 'film_name' : film } )
+        return datas
 
     def solo_idols(self, min_film_count=10, max_film_count=400):
         conn = sqlite3.connect(IDP)
