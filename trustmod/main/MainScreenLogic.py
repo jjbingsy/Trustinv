@@ -123,7 +123,57 @@ class MainScreenLogic:
     def intial_data(self, min_film_count=10, max_film_count=400):
         #self.collector.data = [{'source': 'i'}]
         #self.container.clear_widgets()
-        self.collector.data = self.idols(min_film_count=min_film_count, max_film_count=max_film_count ) #[{'text': str(x)} for x in range(50)]    
+        #self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count ) #[{'text': str(x)} for x in range(50)]    
+        self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count)
+
+    def solo_idols(self, min_film_count=10, max_film_count=400):
+        conn = sqlite3.connect(IDP)
+        c = conn.cursor()
+        c.execute(f'''
+            create temp view if not exists 
+            solo_cast_films (film, shared_key, idol) as 
+            select distinct fi.film_name, i.shared_key, i.name 
+            from film_idols fi join idols i 
+            on fi.idol_link = i.link 
+            group by fi.film_name 
+            having count(distinct i.shared_key) = 1; ''')
+        conn.commit()
+        c.execute(f'''
+            select i.shared_key, i.name 
+            from film_idols fi join idols i on fi.idol_link = i.link 
+            group by i.shared_key 
+            having count(distinct fi.film_name) > {min_film_count} 
+            and count(distinct fi.film_name) < {max_film_count} 
+            and i.shared_key is not null 
+            order by count(distinct fi.film_name) desc;''')
+        rows = c.fetchall()
+        datas = []
+        for shared_key_column in rows:
+            shared_key = shared_key_column[0]
+            idol = shared_key_column[1]
+            c.execute(f'''
+                select s.film, f.description from solo_cast_films s join films f on film = name where shared_key = {shared_key}''')
+            
+
+            films = c.fetchall()
+            if films:
+                random.shuffle(films)
+                film = films[0][0]
+
+                description = films[0][1]
+                #print (film, idol)
+                idols = [(shared_key, idol)]
+                #print (idols[0][1], description)
+                datas.append ({'source': f'{IDD}/{film}.jpg', 'idols': idols,  'description' : description, 'film_name' : film } )
+        return datas
+
+
+
+
+                #datas.append({'shared_key': shared_key, 'films': films})
+
+            #yield {'shared_key': shared_key[0], 'films': films}
+
 
 
 

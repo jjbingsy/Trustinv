@@ -99,7 +99,7 @@ class MainScreenApp(MDApp):
     def build(self):
         print (f"MainScreenApp: {type(self.msl)}")
         self.theme_cls.theme_style = "Dark"
-        self.theme_cls.primary_palette = "Orange"
+        self.theme_cls.primary_palette = "Blue"
         self.msl.intial_data()
         #self.msl.collector.data = [{'text': str(x)} for x in range(50)]    
 

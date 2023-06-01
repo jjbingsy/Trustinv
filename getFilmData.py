@@ -7,6 +7,10 @@ import threading
 from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, MEDIA_DIRECTORIES as MDD, SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2
 from trustmod.classes import MissFilm as MissFilm_msl, GuruFilm, JavFilm
 
+# create temp view if not exists solo_cast_films (film, shared_key, idol) as select distinct fi.film_name, i.shared_key, i.name from film_idols fi join idols i on fi.idol_link = i.link group by fi.film_name having count(distinct i.shared_key) = 1;
+# select idol, shared_key, count(film) cnt from solo_cast_films group by shared_key having cnt > 4 order by cnt asc;
+
+
 def getFilmData(self, film, idol=None, check_series=False):
     conn2 = sqlite3.connect(IDP)
     conn = sqlite3.connect(IDB2)
@@ -126,6 +130,8 @@ for x in allfilms:
 #         film = y[0]
 
 #         print (film, series_link)
+# select distinct fi.film_name, i.shared_key from film_idols fi join idols i on fi.idol_link = i.link group by fi.film_name having count(distinct i.shared_key) = 1 and i.shared_key = 2033 order by i.shared_key;
+# select distinct fi.film_name from film_idols fi join idols i on fi.idol_link = i.link group by fi.film_name having count(distinct i.shared_key) = 1 and i.shared_key = 2033;
 
 conn.close()
 conn2.close()
