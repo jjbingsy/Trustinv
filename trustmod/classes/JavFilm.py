@@ -145,7 +145,107 @@ class JavFilm (Film):
             for idol in idols:
                 self.add_idol(Idol(idol.string, link=idol["href"]))
 
-    def __init__(self, page=None, file=None, name=None, fixed_text=None, store=True, force=False):
+    def checkSource(self, name, store=True, force=False):
+        href = f"https://www.javdatabase.com/movies/{name.lower()}/"
+        page = get_content(href, parseTitle(name.upper()), store=store, force=force)
+        soup = bs4(page, "lxml")
+        return soup.find('tr', class_='moviecovertb'), soup, page
+
+
+    def __init__(self, name=None, store=True, force=False):
+        self.content = None
+        self.idols = []
+        #self.image_link = None already in Film
+        self.series_link = None
+        self.series_name = None
+        self.image_type = None
+        self.image_content = None
+        #self.film_name = None already in Film
+        #self.film_link = None already in Film
+        self.content = None
+        self.film_name = None
+        self.film_link = None
+        page = None
+        image_source = None
+        soup = None
+        if "MIDV-" in name:
+            alt_name = name + "-2"
+            image_source, soup, page = self.checkSource(alt_name, store=store, force=force)
+        if not image_source:
+            image_source, soup, page = self.checkSource(name, store=store, force=force)
+        rdate = None
+        self.content = None
+        self.image_link = None
+        series_name = None
+        series_link = None
+        desc = None
+        film_link = None
+        name = None
+        if image_source:
+            image_link = image_source.find('img')['src']
+            name = soup.h1.text
+            film_link = f"https://www.javdatabase.com/movies/{name.lower()}/"
+            description = soup.find('td', text='Translated Title:')
+            #print ("XXX", description.text)
+            try:
+                desc = description.next_sibling.text.strip()
+            except:
+                pass
+            try:
+                desc = description.next_sibling.next_sibling.text.strip()
+            except:
+                pass
+            seriesTitle = soup.find('td', text='Series: ')
+            #stitle = seriesTitle.next_sibling.text.strip()
+            #print ("STITLE", stitle)
+            try:
+                if seriesTitle.next_sibling.text.strip() != "":
+                    series_name = seriesTitle.next_sibling.text.strip()
+                    series_link = seriesTitle.next_sibling.a['href']
+            except:
+                pass
+            try:
+                if seriesTitle.next_sibling.next_sibling.text.strip() != "":
+                    series_name = seriesTitle.next_sibling.next_sibling.text.strip()
+                    series_link = seriesTitle.next_sibling.next_sibling.a['href']
+            except:
+                pass
+
+            self.content = page
+            releaseDateTitle = soup.find('td', text='Release Date:')
+            releaseDate1 = releaseDateTitle.next_sibling.text
+            try:
+                releaseDate1 = releaseDateTitle.next_sibling.next_sibling.text
+            except:
+                pass
+            rdate = parse(releaseDate1, fuzzy=True)
+
+
+
+            super().__init__(image_link=image_link, film_name=name, description=desc, series_name=series_name, series_link=series_link, film_link=film_link, release_date=rdate)
+            idols = soup.find_all('div', class_='idol-thumb')
+
+
+            for idol in idols:
+                idolsp = idol.previous_sibling
+                #print(idolsp.a.text, idolsp.a['href'])
+                # Extract the idol name
+                idol_name = idolsp.find('a').text
+                #print (idol_name)
+            
+                # Extract the idol link
+                idol_link = idol.find('a')['href']
+            
+                # Extract the idol image URL
+                idol_image = idol.find('img')['src']
+                self.add_idol(Idol(idol_name, link=idol_link, image_link=idol_image))
+
+
+
+
+
+
+    def ___orig_init__(self, name=None, fixed_text=None, page=None, file=None, store=True, force=False):
         self.content = None
         self.idols = []
         #self.image_link = None already in Film

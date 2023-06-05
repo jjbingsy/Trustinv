@@ -20,10 +20,14 @@ def get_content(url, name, store=True, force=False):
     conn = sqlite3.connect(FILMSOURCES_PATH_CONTENTS)
     cursor = conn.cursor()
 
+    working_url = url
+    if "https://missav.com/en/" in url and "MIDV" in name:
+        pass
+
     # Check if the URL exists in the table
     result = None
     if not force:
-        cursor.execute("SELECT content FROM filmsources WHERE url = ?", (url,))
+        cursor.execute("SELECT content FROM filmsources WHERE url = ?", (working_url,))
         result = cursor.fetchone()
     content = None
 
@@ -32,12 +36,12 @@ def get_content(url, name, store=True, force=False):
     else:
         # Request the content from the URL
         time.sleep(2)
-        response = requests.get(url, headers=USER_AGENT_GOOGLE_CONTENTS)
+        response = requests.get(working_url, headers=USER_AGENT_GOOGLE_CONTENTS)
         content = response.text
         #print(name, url)
         if store:
             # Insert the URL, name, and content into the table
-            cursor.execute("INSERT or REPLACE INTO filmsources (url, name, content) VALUES (?, ?, ?)", (url, name, content))
+            cursor.execute("INSERT or REPLACE INTO filmsources (url, name, content) VALUES (?, ?, ?)", (working_url, name, content))
             conn.commit()
     conn.close()
     return content

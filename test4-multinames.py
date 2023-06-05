@@ -1,40 +1,44 @@
-source2="C:/Users/bing/Documents/trusti/ABP-655.jpg",  # Path to the image
-from kivymd.app import MDApp
-from kivymd.uix.imagelist import MDSmartTile
-from kivymd.uix.list import TwoLineListItem
-from kivymd.uix.button import MDIconButton
+import sqlite3
+from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, MEDIA_DIRECTORIES as MDD, SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2
+from trustmod.classes import MissFilm , GuruFilm, JavFilm
 
-class MainApp(MDApp):
-    def build(self):
-        tile = MDSmartTile(
-            radius=24,
-            box_radius=[0, 0, 24, 24],
-            box_color=(0, 0, 0, .8),  # Dark color with a bit of transparency
-            box_position="header",  # Place the box as a header
-            overlap=False,  # Don't let the box overlap the image
-            lines=2,  # Allow two lines of text in the box
-            source="C:/Users/bing/Documents/trusti/ABP-655.jpg",  # Path to the image
-        )
+conn = sqlite3.connect(IDB2)
+cnn = sqlite3.connect(IDP)
 
-        # Add a heart icon button to the tile
-        icon_button = MDIconButton(
-            icon="heart-outline",
-            theme_icon_color="Custom",
-            icon_color=(1, 1, 1, 1),  # White color for the icon
-            pos_hint={"center_y": .5},
-        )
-        icon_button.bind(on_release=lambda x: setattr(icon_button, 'icon', "heart" if icon_button.icon == "heart-outline" else "heart-outline"))
-        tile.add_widget(icon_button)
+c = cnn.cursor() # idp
+cr = conn.cursor() # idb2
 
-        # Add a two-line text item to the tile
-        text_item = TwoLineListItem(
-            text="[color=#ffffff][b]My cats[/b][/color]",  # White bold text
-            secondary_text="[color=#808080][b]Julia and Julie[/b][/color]",  # Gray bold secondary text
-            pos_hint={"center_y": .5},
-            _no_ripple_effect=True,
-        )
-        tile.add_widget(text_item)
+cr.execute('''
+    select name, shared_key from film_series; 
+''')
+for film, shared_key in cr.fetchall():
+    print (film, shared_key)
+    c.execute('''update films set series_id = ? where name = ?''', (shared_key, film))
+cnn.commit()
 
-        return tile
+miss = MissFilm(name="JUQ-049")
+series_tochange = miss.series_link
+cr.execute('''select rowid from film_series where name = ?''', ("JUQ-049",))
+new_shared_key = cr.fetchone()[0]
 
-MainApp().run()
+c.execute('''select name from films where series_id = ?''', (1125,))
+for film_t in c.fetchall():
+    film = film_t[0]
+    miss = MissFilm(name=film)
+    if miss.content and miss.series_link == series_tochange:
+        print (film)
+        cr.execute('''update film_series set shared_key = ? where name = ?''', (new_shared_key, film))
+        
+cr.execute('''update series set shared_key = ? where link = ?''', (new_shared_key, series_tochange))
+conn.commit()
+
+conn.close()
+cnn.close()
+
+# ihad toupdate series set shared_key = 951 where link = 'https://jav.guru/series/on-the-7th-day-after-being-raped-by-my-husbands-boss-i-lost-my-mind/';
+'''
+update film_series set shared_key = 951 where name = 'JUX-790';
+update film_series set shared_key = 951 where name = 'JUX-942';
+update film_series set shared_key = 951 where name = 'JUX-728';
+delete from film_series where name = 'JUL-254';
+'''

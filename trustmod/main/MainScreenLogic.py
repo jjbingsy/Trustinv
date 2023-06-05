@@ -16,105 +16,30 @@ class MainScreenLogic:
         self.container = None
         
         # self.conn = sqlite3.connect(IDB2)
+        conn = sqlite3.connect(IDB2)
+        c = conn.cursor()
+        query = '''
+        select shared_key, name from (select * from series where link not like "%miss%") group by shared_key;
+        
+        '''
+
+        c.execute(query)
+        self.series_name = {tup[0]: tup[1] for tup in c.fetchall()}
         # self.cursor = self.conn.cursor()
-        # cn = sqlite3.connect(IDP)
-        # cr = cn.cursor()
+        cn = sqlite3.connect(IDP)
+        cr = cn.cursor()
+        cr.execute('select shared_key, name from idols group by shared_key;') #XX
+        results = cr.fetchall()
+        self.shared_key_name = {tup[0]: tup[1] for tup in results}
+        #print (self.shared_key_name)
+        cr.execute('select name, description from films;')
+        self.film_desc = {tup[0]: tup[1] for tup in cr.fetchall()}
+        #print (self.series_name[1125]  )
+        for key, value in self.series_name.items():
+            print (key, value)
 
-        # self.cursor.execute('''
-        #     CREATE TABLE IF NOT EXISTS idols (
-        #     shared_key INTEGER PRIMARY KEY, name TEXT)
-        #     ''')
-        # self.cursor.execute('''
-        #     CREATE TABLE IF NOT EXISTS films (
-        #     film TEXT PRIMARY KEY, description TEXT, series_link TEXT, series_name TEXT)
-        #     ''')
-
-        # self.cursor.execute('''
-        #     CREATE TABLE IF NOT EXISTS idol_films (
-        #     shared_key INTEGER, 
-        #     film TEXT,
-        #     primary key (shared_key, film),
-        #     FOREIGN KEY(shared_key) REFERENCES idols(shared_key),
-        #     FOREIGN KEY(film) REFERENCES films(film) )
-        #     ''')
-        # self.conn.commit()
-
-
-
-
-        # q1 = '''
-        # select i.shared_key, count(distinct fi.film_name) c from film_idols fi join idols i on fi.idol_link = i.link group by i.shared_key having shared_key not null and c > 1 order by c desc;
-        # '''
-        # q2 = '''
-        # select fi.film_name, count(distinct i.shared_key) c from film_idols fi join idols i on fi.idol_link = i.link group by fi.film_name having c = 1 and i.shared_key = ?;
-        # '''
-
-        
-        # kk = []
-        
-        # cr.execute(q1)
-        # results = cr.fetchall()
-        # for i in results:
-        #     shared_key = i[0]
-        #     q3 = "select name from idols where shared_key = ?"
-        #     cr.execute(q3, (shared_key,))
-        #     names = cr.fetchone()                   
-        #     name = names[0]
-        #     self.cursor.execute("INSERT INTO idols VALUES (?, ?)", (shared_key, name))
-        #     self.conn.commit()    
-        #     cr.execute(q2, (shared_key,))
-            
-        #     films = cr.fetchall()
-        #     if films:
-        #         for film in films:
-        #             film_name = film[0]
-        #             cr.execute ("select description from films where name = ?", (film_name,))
-        #             desc = cr.fetchone()
-        #             description = desc[0]
-        #             self.cursor.execute("INSERT INTO films(film, description) VALUES (?, ?)", (film_name, description))
-        #             #print (film_name, description)
-        #             self.cursor.execute("INSERT INTO idol_films VALUES (?, ?)", (shared_key, film_name))
-        # cr.execute("select name, description from films")
-        # rows1 = cr.fetchall()
-        # for row in rows1:
-        #     film = row[0]
-        #     desc = row[1]                    
-        #     self.cursor.execute("INSERT or IGNORE INTO films(film, description) VALUES (?, ?)", (film, desc))
-        #     guru = Guru(name=film)
-        #     if guru.content:
-        #         if guru.series_link:
-        #             series_link = guru.series_link
-        #             series_name = guru.series_name
-        #             self.cursor.execute("UPDATE films SET series_link = ?, series_name = ? WHERE film = ?", (series_link, series_name, film))
-
-
-        # cn.commit()
-
-
-
-        # self.conn.commit()
-        # self.conn.close()
-
-
-
-
-        #     # if resul:
-        #     #     results2 = resul[random.randint(0, len(resul)-1)]
-        #     # # for e in resul:
-        #     # #     #kk.append ( e[0] )
-        #     # #     results2 = e
-        #     #     if results2:
-        #     #         #print (results2[0], shared_key)
-           
-           
-        # cn.close()
-    
-
-
-    # @property
-    # def collector(self):
-    #     """I'm the 'x' property."""
-    #     return self._collector
+        cr.close()
+        conn.close()
 
     # @collector.setter    
     def collector(self, value):
@@ -122,7 +47,55 @@ class MainScreenLogic:
 
     def intial_data(self, min_film_count=10, max_film_count=400):
         self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count)
-        #self.collector.data = self.get_film("IPX-822") #DLDSS-181
+        #self.collector.data = self.get_film("NSFS-140") #DLDSS-181
+
+
+    def intial_data2(self, min_film_count=10, max_film_count=400):
+        #self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count)
+        
+
+
+        i = []
+        i += self.get_film("SPZ-1133")
+        i += self.get_film("NSFS-139")
+        i += self.get_film("JUL-106")
+        i += self.get_film("MIRD-202")
+        i += self.get_film("MIRD-197")
+        i += self.get_film("IPZ-950")
+        i += self.get_film("IPX-551")
+        i += self.get_film("MIAA-380")
+        i += self.get_film("JUQ-017")
+        i += self.get_film("MEYD-482")
+        i += self.get_film("JUY-609")
+        i += self.get_film("VEC-543")
+        i += self.get_film("VEC-535")
+        i += self.get_film("ADN-467")
+        i += self.get_film("JUL-254")
+
+
+        i += self.get_film("FSDSS-615")
+        i += self.get_film("STARS-839")
+        #i += self.get_film("KSBJ-249")
+        i += self.get_film("IPX-811")
+        i += self.get_film("ADN-286")
+        i += self.get_film("HOMA-119")
+        i += self.get_film("JUQ-240")
+        i += self.get_film("BMW-283")
+        i += self.get_film("MIAA-862")
+        i += self.get_film("SHKD-966")
+        i += self.get_film("MIDV-002")
+        i += self.get_film("MIDV-375")
+        i += self.get_film("MIDV-236")
+        i += self.get_film("MIDV-010")
+        i += self.get_film("MIDV-023")
+        i += self.get_film("IPX-993")
+        i += self.get_film("MIAA-860")
+        
+
+        self.i = i
+
+        self.collector.data =  i
+
 
     def get_film(self, film):
         conn = sqlite3.connect(IDP)
@@ -133,14 +106,23 @@ class MainScreenLogic:
         filmX = c.fetchone()
         description = filmX[0]
 
-        c.execute('''select i.shared_key, i.name 
+
+        #input ("mother ficl")
+        c.execute('''select distinct i.shared_key 
             from film_idols fi join idols i on fi.idol_link = i.link 
             where fi.film_name = ?''', (film,))
         idols = c.fetchall()
         conn.close()
-        idolsG = [(i[0], i[1]) for i in idols]
+        idolsG = [i[0] for i in idols if i[0]]
         datas = []
-        datas.append ({'source': f'{IDD}/{film}.jpg', 'idols': idolsG,  'description' : description, 'film_name' : film } )
+        print (f"XXXXXXXXXXXXXXXXXXXX{film}XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX", idolsG)
+        print (f"{idolsG}")
+        if idolsG:
+            iname = self.shared_key_name[idolsG[0]]
+        else:
+            iname = ""
+
+        datas.append ({ 'idols': idolsG,  'description' : description, 'film_name' : film, 'label' : f'{film} - {iname} ' } )
         return datas
 
     def solo_idols(self, min_film_count=10, max_film_count=400):
@@ -169,7 +151,7 @@ class MainScreenLogic:
             shared_key = shared_key_column[0]
             idol = shared_key_column[1]
             c.execute(f'''
-                select s.film, f.description from solo_cast_films s join films f on film = name where shared_key = {shared_key}''')
+                select s.film from solo_cast_films s join films f on film = name where shared_key = {shared_key}''')
             
 
             films = c.fetchall()
@@ -177,11 +159,11 @@ class MainScreenLogic:
                 random.shuffle(films)
                 film = films[0][0]
 
-                description = films[0][1]
+                #description = films[0][1]
                 #print (film, idol)
-                idols = [(shared_key, idol)]
+                idols = [shared_key]
                 #print (idols[0][1], description)
-                datas.append ({'source': f'{IDD}/{film}.jpg', 'idols': idols,  'description' : description, 'film_name' : film } )
+                datas.append ({'idols': idols,  'description' : self.film_desc[film], 'film_name' : film } )
         return datas
 
 
@@ -228,8 +210,8 @@ class MainScreenLogic:
                 cr.execute('select description from films where name = ?', (film,))
                 description = cr.fetchone()[0]
                 #print (film, description)
-                idols = [(shared_key, idol_name)]
-                datas.append ({'source': f'{IDD}/{film}.jpg', 'idols': idols,  'description' : description, 'film_name' : film } )
+                idols = [shared_key]
+                datas.append ({'idols': idols,  'description' : description, 'film_name' : film } )
             else:
                 print (f'no film for {idol_name} {shared_key}')
                 
@@ -245,7 +227,10 @@ class MainScreenLogic:
     def idols_choice(self: 'MainScreenLogic', MyTile):
 
         shared_key = MyTile.shared_key
-        idol_name = MyTile.idol_name
+        print (shared_key)
+        idol_name = MyTile.series_name
+        if shared_key > 0:
+            idol_name = self.shared_key_name[shared_key]
 
         
         if shared_key > 0:
@@ -264,9 +249,8 @@ class MainScreenLogic:
                 for idss in cr.fetchall():
                     
                     if idss[0]:
-                        cr.execute(f'''select name from idols where shared_key = {idss[0]} ''')
-                        idols.append([idss[0], cr.fetchone()[0]])
-                datas.append ({'source': f'{IDD}/{film}.jpg', 'idols': idols,  'description' : description, 'film_name' : film } )
+                        idols.append(idss[0])
+                datas.append ({'idols': idols,  'description' : description, 'film_name' : film } )
 
 
                 random.shuffle(datas)
@@ -275,29 +259,19 @@ class MainScreenLogic:
 
         else:
             datas = []
+            series_shared_key = int (MyTile.series_shared_key)
             cn = sqlite3.connect(IDB2)
             cr = cn.cursor()
-            print (MyTile.series_link)
+
             cr.execute(f'''
-                select f.film, ifs.shared_key, f.series_link, i.name, f.description from films f 
-                    join idol_films ifs on f.film = ifs.film 
-                    join idols i on ifs.shared_key = i.shared_key
-            where f.series_link = '{MyTile.series_link}' ''')
-            # cr.execute(f'''
-            #     select f.film, ifs.shared_key, f.series_link, f.description from films f 
-            #         join idol_films ifs on f.film = ifs.film 
-            # where f.series_link = '{MyTile.series_link}' ''')
+                       select name from film_series where shared_key = ?;
+            ''', (series_shared_key,))
+            i = []
             for rows in cr.fetchall():
                 film = rows[0]
-                shared_key = rows[1]
-                series_link = rows[2]
-                idol_name = rows[3]
-                description = rows[4]
-                idols = [(shared_key, idol_name)]
-                datas.append ({'source': f'{IDD}/{film}.jpg', 'film_name' : film, 'description' : description, 'idols' : idols } )
+                i += self.get_film(film)
 
-            self.collector.data = datas
-                
+            self.collector.data = i
             cn.close()
         
 
@@ -326,36 +300,28 @@ class MainScreenLogic:
 
         # Query to get the number of films in each series
         c.execute("""
-            SELECT series_link, COUNT(film) as num_films
-            FROM films
-            GROUP BY series_link having series_link not null and num_films > 1
-            ORDER BY num_films desc
+        select shared_key, count(name) cnt from film_series group by shared_key having cnt > 1 order by cnt desc;
         """)
         series_counts = c.fetchall()
 
         collect = []
-        for series_link, count in series_counts:
-
-            print (series_link, count)
-            c.execute("""
-                SELECT film, description, series_link, series_name
-                FROM films
-                WHERE series_link = ?
-            """, (series_link,))
-            film_row = c.fetchall()
-            if film_row is not None:
-                random.shuffle(film_row)
-                film = film_row[0][0]
-                description = film_row[0][1]
-                series_link = film_row[0][2]
-                series_name = film_row[0][3]
-
-                idols = [(0, series_name )]
-                collect.append ({'source': f'{IDD}/{film}.jpg', 
-                                'film' : film, 'description' : description, 
-                                'idols' : idols,
-                                'series_name' : series_name,
-                                'series_link' : series_link} )
+        for shared_key, count in series_counts:
+            #shared_key = int(shared_key_raw
+            if shared_key in self.series_name:
+                print (shared_key, count)
+                c.execute("""
+                    select name from film_series where shared_key = ?;
+                """, (shared_key,))
+                film_row = c.fetchall()
+                if film_row is not None:
+                    random.shuffle(film_row)
+                    film = film_row[0][0]
+                    print (film, shared_key, count)
+                    idols = [0]
+                    collect.append ({'film_name' : film, 'shared_key' : 0, 'label' : f'{self.series_name[shared_key]}',
+                                    'idols' : idols, 
+                                    'series_shared_key' : shared_key,
+                                    'series_name' : self.series_name[shared_key]} )
 
         self.collector.data = collect
 

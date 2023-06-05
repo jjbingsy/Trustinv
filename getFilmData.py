@@ -35,7 +35,7 @@ def getFilmData(self, film, idol=None, check_series=False):
         print ("yeasdsdsdsdsd")
     return True
 
-
+#select shared_key, name from idols group by shared_key;
 #************** side work englishfy description
 
 conn = sqlite3.connect(IDB2)
@@ -58,7 +58,7 @@ c.execute('''
 c.execute('''
     CREATE TABLE IF NOT EXISTS film_series (
         name TEXT PRIMARY KEY,
-        shared_key TEXT
+        shared_key INTEGER
     )
 ''')
 
