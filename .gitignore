@@ -12,6 +12,7 @@ trustmod/vars/env_001.py
 
 # Distribution / packaging
 .Python
+stuff/
 build/
 develop-eggs/
 dist/
