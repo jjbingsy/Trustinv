@@ -56,6 +56,17 @@ class MainScreenLogic:
 
 
         i = []
+        i += self.get_film("EMSK-006")
+        i += self.get_film("NATR-687")
+        i += self.get_film("BDA-071")
+        i += self.get_film("BDA-073")
+        i += self.get_film("BDA-080")
+        i += self.get_film("BDA-082")
+        i += self.get_film("BDA-150")
+        i += self.get_film("KEED-077")
+        i += self.get_film("MIAA-858")
+        i += self.get_film("DVEH-008")
+        i += self.get_film("SAME-056")
         i += self.get_film("SPZ-1133")
         i += self.get_film("NSFS-139")
         i += self.get_film("JUL-106")
