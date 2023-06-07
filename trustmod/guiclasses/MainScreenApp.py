@@ -11,6 +11,9 @@ from kivymd.uix.list.list import OneLineListItem
 from kivymd.uix.toolbar import MDTopAppBar
 from kivy.properties import StringProperty, NumericProperty, BooleanProperty
 from kivy.properties import ObjectProperty, ListProperty
+import itertools
+from icecream import ic
+
 
 
 from ..main import MainScreenLogic
@@ -18,13 +21,7 @@ from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, M
 
 
 class MultiIdolsIconButton(MDIconButton):
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-    
-    def on_release(self, *args):
-        #self.parent.change_idol()
-        pass
+    pass
 
 
 class MyBar(MDTopAppBar):
@@ -41,8 +38,8 @@ class MyButton(MDRectangleFlatButton):
 
 
 class MyTile (MDSmartTile):
-    
-    idols = ListProperty([])
+    idol_count = NumericProperty(0)
+    idols = ObjectProperty(None)
     idol_index = NumericProperty(0)
     idol_name = StringProperty('')
     shared_key = NumericProperty(0)
@@ -59,16 +56,28 @@ class MyTile (MDSmartTile):
     menu_items = ObjectProperty()
     series_link = StringProperty('')
     series_name = StringProperty('')
+    fixed = BooleanProperty(True)
+
+    def on_idol_count(self, *args):
+        pass
+#         if self.idol_count > 1 and self.fixed:
+#             print (self.idol_count)
+#             self.add_widget ( MDIconButton( icon = "dots-vertical", on_release=self.change_idol  ))
+# #        self.fixed = False
+
+
 
     def change_idol(self, *args):
-        self.idol_index += 1 
+   
+        self.idol_name = str(MDApp.get_running_app().msl.shared_key_name [   next(self.idols)] )
 
     def on_idol_index(self, *args):
-        if self.idol_index >= len(self.idols):
-            self.idol_index = 0
-        #self.label = f"{self.film_name} - {self.idols[self.idol_index][1]}"
-        self.idol_name = self.idols[self.idol_index][1]
-        self.shared_key = self.idols[self.idol_index][0]
+        pass
+        # if self.idol_index >= len(self.idols):
+        #     self.idol_index = 0
+        # #self.label = f"{self.film_name} - {self.idols[self.idol_index][1]}"
+        # self.idol_name = self.idols[self.idol_index][1]
+        # self.shared_key = self.idols[self.idol_index][0]
 
 
 
@@ -83,6 +92,12 @@ class MyTile (MDSmartTile):
         #     self.label = f"{self.film_name} - {MDApp.get_running_app().msl.shared_key_name[self.idols[self.idol_index]]}"
         
     def on_idols(self, *args):
+        pass
+        # ic (len(self.idols))
+        # if (len(self.idols) > 1) and self.fixed:
+        #     ic (len(self.idols))
+        #     self.add_widget ( MDIconButton( icon = "dots-vertical", on_release=self.change_idol  ))
+        # self.fixed = False
         
         #print (f"on_idols: {self.label}")
         # if self.film_name != "" and self.label == '':
@@ -90,15 +105,15 @@ class MyTile (MDSmartTile):
         
         # if self.idols:
         #     self.label += f" {self.idols[0][1]} "
-        if self.idols and self.idols[0]:
-            self.shared_key =  self.idols[0]
+                                                                                # if self.idols and self.idols[0]:
+                                                                                #     self.shared_key =  self.idols[0]
         #print (f"on_idols: {self.label} {self.idols[0]}")
-        if self.shared_key > 0:
-            #self.label = MDApp.get_running_app().msl.shared_key_name[self.shared_key]
-            self.idol_name = MDApp.get_running_app().msl.shared_key_name[self.shared_key]
-        else:
-            #self.label = self.series_name
-            self.idol_name = self.series_name
+                                                                                # if self.shared_key > 0:
+                                                                                #     #self.label = MDApp.get_running_app().msl.shared_key_name[self.shared_key]
+                                                                                #     self.idol_name = MDApp.get_running_app().msl.shared_key_name[self.shared_key]
+                                                                                # else:
+                                                                                #     #self.label = self.series_name
+                                                                                #     self.idol_name = self.series_name
 
     def on_release(self, *args):
         MDApp.get_running_app().msl.mybar.title = self.description

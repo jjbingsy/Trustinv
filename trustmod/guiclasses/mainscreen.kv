@@ -25,7 +25,7 @@ MDNavigationLayout:
                         default_size_hint: None, None
                         spacing: dp(4)
                         #cols: 5
-                        cols: 5
+                        cols: 3
                         size_hint_y: None
                         height: self.minimum_height
                         orientation: 'lr-tb'
@@ -51,18 +51,17 @@ MDNavigationLayout:
         on_release: app.msl.idols_choice(root)
         icon: "heart-outline"    
     MyLabel:
-        text: f"{root.label}"
+        text: f"{root.film_name} - {root.idol_name}"
     MDIconButton:
         icon: "play-outline" 
         on_release: app.msl.playme2(root.film_name)
-    # MDIconButton:
-    #     icon: "heart-outline"    
-    #     on_release: app.msl.get_random_films_in_series()
+    MDIconButton:
+        icon: "dots-vertical"    
+        disabled: root.fixed
+        on_release: root.change_idol()
     # MDIconButton:
     #     icon: "dots-vertical"
     #     on_release: root.change_idol()
         
-
-
 
 

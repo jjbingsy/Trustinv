@@ -1,6 +1,15 @@
 # how to import parseTitle from trustmod\uility\string_mainpulation.py
 # into test1.py
-from ..utility import parseTitle as ps
+from icecream import ic
+import itertools
 
-def test1(string):
-    print ( ps(string), "k")
+d = [4, 3, 2, 555, 666]
+d = []  # Empty list
+i = itertools.cycle(d)
+
+try:
+    X = next(i)
+    print(X)
+    print(X)
+except StopIteration:
+    print("Reached the end of the iterator.")

@@ -3,6 +3,7 @@ import random
 import subprocess
 from pathlib import Path
 from icecream import ic
+import itertools
 import threading
 from trustmod.classes import MissFilm as Guru
 
@@ -102,7 +103,9 @@ class MainScreenLogic:
             iname = self.shared_key_name[idolsG[0]]
         else:
             iname = ""
-        datas.append ({ 'idols': idolsG,  'description' : description, 'film_name' : film, 'label' : f'{film} - {iname} ' } )
+        recyc = itertools.cycle( idolsG)
+        r = next (recyc)
+        datas.append ({ 'idols': recyc ,  'description' : description, 'film_name' : film, 'label' : f'{film} - {iname} ', 'idol_name' : self.shared_key_name[r], 'fixed' : (len(idolsG) < 2) } )
         return datas
 
     def solo_idols(self, min_film_count=10, max_film_count=400):
