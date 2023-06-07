@@ -5,15 +5,26 @@ from kivymd.uix.boxlayout import MDBoxLayout
 from kivymd.uix.label import MDLabel
 from kivymd.uix.recycleview import MDRecycleView as RecycleView
 from kivymd.uix.button import MDRectangleFlatButton
+from kivymd.uix.button import MDIconButton
 from kivymd.uix.imagelist.imagelist import MDSmartTile
 from kivymd.uix.list.list import OneLineListItem
 from kivymd.uix.toolbar import MDTopAppBar
-from kivy.properties import StringProperty, NumericProperty
+from kivy.properties import StringProperty, NumericProperty, BooleanProperty
 from kivy.properties import ObjectProperty, ListProperty
 
 
 from ..main import MainScreenLogic
 from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, MEDIA_DIRECTORIES as MDD, SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2
+
+
+class MultiIdolsIconButton(MDIconButton):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+    
+    def on_release(self, *args):
+        #self.parent.change_idol()
+        pass
 
 
 class MyBar(MDTopAppBar):
@@ -30,10 +41,12 @@ class MyButton(MDRectangleFlatButton):
 
 
 class MyTile (MDSmartTile):
+    
     idols = ListProperty([])
     idol_index = NumericProperty(0)
     idol_name = StringProperty('')
     shared_key = NumericProperty(0)
+    multi_idols = BooleanProperty(False)
 
     film_name = StringProperty('')
 
