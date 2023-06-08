@@ -11,14 +11,24 @@ from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, M
 from trustmod.classes import MissFilm as MissFilm_msl
 
 
+#https://kivy.org/doc/stable/api-kivy.uix.recycleview.html
+class FilmTileLogic:
+    idol_shared_key = 0
+    series_shared_key = 0
+    idols = None
+
+    def __init__(self, film_name:str, series_dominant:bool =True, top_idol:int =0 ) -> None:
+        pass
+
+
+
+
 class MainScreenLogic:
     def __init__(self: 'MainScreenLogic'):
         self.mybar = None
         self._collector = None
         self.container = None
         
-        # self.conn = sqlite3.connect(IDB2)
-        cnn = sqlite3.connect(IDP)
         conn = sqlite3.connect(IDB2)
         c = conn.cursor()
         cn = sqlite3.connect(IDP)
@@ -54,9 +64,9 @@ class MainScreenLogic:
         #print (self.shared_key_name)
         cr.execute('select name, description from films;')
         self.film_desc = {tup[0]: tup[1] for tup in cr.fetchall()}
-        #print (self.series_name[1125]  )
-        for key, value in self.series_name.items():
-            print (key, value)
+
+        c.execute('select name, shared_key from film_series;')
+        self.film_series = {tup[0]: tup[1] for tup in c.fetchall()}
 
         cr.close()
         conn.close()
@@ -80,38 +90,45 @@ class MainScreenLogic:
                 # Read each line and strip spaces
                 for line in file:
                     line = line.strip()
-                    i += self.get_film(line)
+                    i.append(self.get_film(line))
         else:
-            i += self.get_film("IPX-551")
+            i.append( self.get_film("IPX-551"))
         self.i = i
 
         self.collector.data =  i
 
 
-    def get_film(self, film):
+    def get_film(self, film, series_dominant=True) -> dict:
         conn = sqlite3.connect(IDP)
         c = conn.cursor()
-        description = self.film_desc[film]
+        film_data: dict = dict()
+
+        film_data['film_name'] = film
+        film_logic = FilmTileLogic(film_name=film)
+
         c.execute('''select distinct i.shared_key 
             from film_idols fi join idols i on fi.idol_link = i.link 
             where fi.film_name = ?''', (film,))
         idols = c.fetchall()
         conn.close()
-        idolsG = [i[0] for i in idols if i[0]]
-        datas = []
+        idolsG = [i[0] for i in idols if i[0]]        
+
+        if film in self.film_series:
+            film_logic.series_shared_key = self.film_series[film]
+            if series_dominant:
+                idolsG.insert (0,0)
+        idols = None
         if idolsG:
-            iname = self.shared_key_name[idolsG[0]]
-        else:
-            iname = ""
-        recyc = None
-        r = 0
-        if idolsG:
-            recyc = itertools.cycle( idolsG)
-            r = next (recyc)
-            datas.append ({ 'idols': recyc ,   'film_name' : film,  'idol_shared_key': r , 'disabled_multi_idol' : (len(idolsG) < 2) } )
-        else:
-            datas.append ({ 'film_name' : film } )
-        return datas
+            idols = itertools.cycle(idolsG)
+            shared_key = next(idols)
+            film_logic.idol_shared_key = shared_key
+        if len(idolsG) > 1:
+            film_logic.idols = idols
+        film_data['tile_logic'] = film_logic        
+
+        return film_data
+
+
 
     def solo_idols(self, min_film_count=10, max_film_count=400):
         conn = sqlite3.connect(IDP)

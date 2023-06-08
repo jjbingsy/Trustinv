@@ -11,9 +11,16 @@ MDNavigationLayout:
                     md_bg_color: "#e7e4c0"
                     specific_text_color: "#4a4939"
                     left_action_items:
-                        [['menu', lambda x: nav_drawer.set_state("open")], ['menu', lambda x: app.msl.get_random_films_in_series()], ['menu', lambda x: app.msl.intial_data2() ] ]
+                        [['menu', lambda x: nav_drawer.set_state("open")], 
+                        ['menu', lambda x: app.msl.get_random_films_in_series()],
+                        ['menu', lambda x: app.msl.intial_data2() ] ]
                     right_action_items:
-                        [['star-outline', lambda x: app.msl.intial_data()], ['star-outline', lambda x: app.msl.intial_data(min_film_count=5, max_film_count=11)], ['star-outline', lambda x: app.msl.intial_data(min_film_count=3, max_film_count=6)], ['star', lambda x: app.msl.intial_data(min_film_count=2, max_film_count=4)], ['star', lambda x: app.msl.intial_data(min_film_count=1, max_film_count=3)], ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)]  ]
+                        [['star-outline', lambda x: app.msl.intial_data()], 
+                        ['star-outline', lambda x: app.msl.intial_data(min_film_count=5, max_film_count=11)], 
+                        ['star-outline', lambda x: app.msl.intial_data(min_film_count=3, max_film_count=6)], 
+                        ['star', lambda x: app.msl.intial_data(min_film_count=2, max_film_count=4)], 
+                        ['star', lambda x: app.msl.intial_data(min_film_count=1, max_film_count=3)], 
+                        ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)]  ]
                 MyRec:
                     id: rec
                     viewclass: 'MyTile'
@@ -25,7 +32,7 @@ MDNavigationLayout:
                         default_size_hint: None, None
                         spacing: dp(4)
                         #cols: 5
-                        cols: 5
+                        cols: 3
                         size_hint_y: None
                         height: self.minimum_height
                         orientation: 'lr-tb'

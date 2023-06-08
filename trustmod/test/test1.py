@@ -31,3 +31,13 @@ if not oo:
 else:
     ic()
 
+
+my_list = [3, 4, 5, 6, 7, 8, 9, 10]
+
+# Remove the element from its current position
+my_list.remove(4)
+
+# Insert the element at the first index
+my_list.insert(0, 4)
+
+print(my_list)  # Output: [4, 2, 3, 5]

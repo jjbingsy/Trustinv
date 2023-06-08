@@ -16,7 +16,7 @@ from icecream import ic
 
 
 
-from ..main import MainScreenLogic
+from ..main import MainScreenLogic, FilmTileLogic
 from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, MEDIA_DIRECTORIES as MDD, SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2
 
 
@@ -38,8 +38,7 @@ class MyButton(MDRectangleFlatButton):
 
 
 class MyTile (MDSmartTile):
-    idol_shared_key = NumericProperty(0)
-    series_shared_key = NumericProperty(0)
+    tile_logic = ObjectProperty(None)
     film_name = StringProperty('')
     disabled_multi_idol = BooleanProperty(True)
     disabled_series = BooleanProperty(True)
@@ -48,17 +47,50 @@ class MyTile (MDSmartTile):
 
     def load_series(self, *args):
         pass
+        # ic (self.series_shared_key)
+        # ic (MDApp.get_running_app().msl.series_name[self.series_shared_key])
+
+    def on_tile_logic(self, *args):
+        if self.tile_logic.series_shared_key > 0:
+            self.disabled_series = False
+        else:
+            self.disabled_series = True
+        if self.tile_logic.idols:
+            self.disabled_multi_idol = False
+        else:
+            self.disabled_multi_idol = True
+        if self.tile_logic.idol_shared_key > 0:
+            self.second_header = MDApp.get_running_app().msl.shared_key_name[self.tile_logic.idol_shared_key]
+        elif self.tile_logic.series_shared_key > 0:
+            self.second_header = MDApp.get_running_app().msl.series_name[self.tile_logic.series_shared_key]
+        else:
+            self.second_header = ''
 
     def change_idol(self, *args):
-        if self.idols:
-            self.idol_shared_key = next(self.idols)
+        new_shared_key = next(self.tile_logic.idols)
+        if new_shared_key > 0:
+            self.idol_shared_key = new_shared_key
+            self.second_header = MDApp.get_running_app().msl.shared_key_name[new_shared_key]
+        elif self.tile_logic.series_shared_key > 0:
+            self.second_header = MDApp.get_running_app().msl.series_name[self.tile_logic.series_shared_key]
+        
+        # if self.idols:
+        #     self.idol_shared_key = next(self.idols)
+        # else:
+        #     self.idol_shared_key = 0
+        # ic(MDApp.get_running_app().msl.shared_key_name[self.idol_shared_key])
 
     def on_idol_shared_key(self, *args):
-        self.second_header = 'dd'
-        if self.idol_shared_key > 0 and self.idol_shared_key in MDApp.get_running_app().msl.shared_key_name:
-            self.second_header = MDApp.get_running_app().msl.shared_key_name[self.idol_shared_key]
-        elif self.idol_shared_key == 0 and self.series_shared_key > 0 and self.series_shared_key in MDApp.get_running_app().msl.series_name:
-            self.second_header = MDApp.get_running_app().msl.series_name[self.series_shared_key]
+        pass
+        # self.second_header = ''
+        # if self.series_dominant and self.series_shared_key > 0 and self.series_shared_key in MDApp.get_running_app().msl.series_name:
+        #     self.second_header = MDApp.get_running_app().msl.series_name[self.series_shared_key]
+        # elif self.idol_shared_key > 0 and self.idol_shared_key in MDApp.get_running_app().msl.shared_key_name:
+        #     self.second_header = MDApp.get_running_app().msl.shared_key_name[self.idol_shared_key]
+        # elif self.idol_shared_key == 0 and self.series_shared_key > 0 and self.series_shared_key in MDApp.get_running_app().msl.series_name:
+        #     self.second_header = MDApp.get_running_app().msl.series_name[self.series_shared_key]
+        # else:
+        #     self.second_header = ''
 
 
     def on_idol_count(self, *args):
