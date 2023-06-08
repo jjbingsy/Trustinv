@@ -38,25 +38,28 @@ class MyButton(MDRectangleFlatButton):
 
 
 class MyTile (MDSmartTile):
-    idol_count = NumericProperty(0)
-    idols = ObjectProperty(None)
-    idol_index = NumericProperty(0)
-    idol_name = StringProperty('')
-    shared_key = NumericProperty(0)
-    multi_idols = BooleanProperty(False)
-
-    film_name = StringProperty('')
-
-    label = StringProperty('')
-
-
-    #texti = StringProperty('')
+    idol_shared_key = NumericProperty(0)
     series_shared_key = NumericProperty(0)
-    description = StringProperty('')
-    menu_items = ObjectProperty()
-    series_link = StringProperty('')
-    series_name = StringProperty('')
-    fixed = BooleanProperty(True)
+    film_name = StringProperty('')
+    disabled_multi_idol = BooleanProperty(True)
+    disabled_series = BooleanProperty(True)
+    idols = ObjectProperty(None) # iterator or None
+    second_header = StringProperty('') #title is composed of film_name and this second_header
+
+    def load_series(self, *args):
+        pass
+
+    def change_idol(self, *args):
+        if self.idols:
+            self.idol_shared_key = next(self.idols)
+
+    def on_idol_shared_key(self, *args):
+        self.second_header = 'dd'
+        if self.idol_shared_key > 0 and self.idol_shared_key in MDApp.get_running_app().msl.shared_key_name:
+            self.second_header = MDApp.get_running_app().msl.shared_key_name[self.idol_shared_key]
+        elif self.idol_shared_key == 0 and self.series_shared_key > 0 and self.series_shared_key in MDApp.get_running_app().msl.series_name:
+            self.second_header = MDApp.get_running_app().msl.series_name[self.series_shared_key]
+
 
     def on_idol_count(self, *args):
         pass
@@ -67,9 +70,6 @@ class MyTile (MDSmartTile):
 
 
 
-    def change_idol(self, *args):
-   
-        self.idol_name = str(MDApp.get_running_app().msl.shared_key_name [   next(self.idols)] )
 
     def on_idol_index(self, *args):
         pass
@@ -116,9 +116,9 @@ class MyTile (MDSmartTile):
                                                                                 #     self.idol_name = self.series_name
 
     def on_release(self, *args):
-        MDApp.get_running_app().msl.mybar.title = self.description
-    #     MDApp.get_running_app().msl.playme2(self.texti)
-    #     print (self.texti)
+        if self.idol_shared_key > 0 and self.film_name in MDApp.get_running_app().msl.film_desc:
+            MDApp.get_running_app().msl.mybar.title = MDApp.get_running_app().msl.film_desc[self.film_name]
+        #maybe add description of series
 
 
 class MyLabel(OneLineListItem):

@@ -3,13 +3,31 @@
 from icecream import ic
 import itertools
 
+
 d = [4, 3, 2, 555, 666]
-d = []  # Empty list
+
 i = itertools.cycle(d)
 
+ic (next(i))
 try:
-    X = next(i)
-    print(X)
-    print(X)
+    ic (next(i))
+    ic (next(i))
+    ic (next(i))
+    ic (next(i))
+    ic (next(i))
 except StopIteration:
     print("Reached the end of the iterator.")
+
+
+j = list()
+j.append(1)
+j.append(2)
+ic (j)
+
+oo = None
+oo = 0
+if not oo:
+    ic (oo)
+else:
+    ic()
+

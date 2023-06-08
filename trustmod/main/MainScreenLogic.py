@@ -103,9 +103,14 @@ class MainScreenLogic:
             iname = self.shared_key_name[idolsG[0]]
         else:
             iname = ""
-        recyc = itertools.cycle( idolsG)
-        r = next (recyc)
-        datas.append ({ 'idols': recyc ,  'description' : description, 'film_name' : film, 'label' : f'{film} - {iname} ', 'idol_name' : self.shared_key_name[r], 'fixed' : (len(idolsG) < 2) } )
+        recyc = None
+        r = 0
+        if idolsG:
+            recyc = itertools.cycle( idolsG)
+            r = next (recyc)
+            datas.append ({ 'idols': recyc ,   'film_name' : film,  'idol_shared_key': r , 'disabled_multi_idol' : (len(idolsG) < 2) } )
+        else:
+            datas.append ({ 'film_name' : film } )
         return datas
 
     def solo_idols(self, min_film_count=10, max_film_count=400):

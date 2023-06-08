@@ -29,3 +29,9 @@ list2 = [[1, 2, 3], [4, 5], [6, 7, 8], [9], [10, 11]]
 
 combined_list = combine_short_sublists(list2)
 print(combined_list)  # Output: [[1, 2, 3], [4, 5, 9], [6, 7, 8], [10, 11]]
+
+
+from trustmod.classes import JavFilm, MissFilm, GuruFilm
+
+guru = GuruFilm(name="PRED-120")
+print (guru.idols)
