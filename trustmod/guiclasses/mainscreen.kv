@@ -32,7 +32,7 @@ MDNavigationLayout:
                         default_size_hint: None, None
                         spacing: dp(4)
                         #cols: 5
-                        cols: 3
+                        cols: 5
                         size_hint_y: None
                         height: self.minimum_height
                         orientation: 'lr-tb'
@@ -55,7 +55,7 @@ MDNavigationLayout:
     overlap: False
     size: "320dp", "320dp"
     MDIconButton:
-        on_release: app.msl.idols_choice(root)
+        on_release: app.msl.idols_choice(root.tile_logic)
         icon: "heart-outline"    
     MyLabel:
         text: f"{root.film_name} - {root.second_header}"
@@ -69,7 +69,7 @@ MDNavigationLayout:
     MDIconButton:
         icon: "menu"
         disabled: root.disabled_series
-        on_release: root.load_series()
+        on_release: app.msl.load_series(root.tile_logic.series_key  )
         
 
 

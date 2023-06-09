@@ -13,17 +13,77 @@ from trustmod.classes import MissFilm as MissFilm_msl
 
 #https://kivy.org/doc/stable/api-kivy.uix.recycleview.html
 class FilmTileLogic:
-    idol_shared_key = 0
-    series_shared_key = 0
-    idols = None
+    series_key = 0
+    shared_key = 0
+    category_name = ''
+    categories = None
 
-    def __init__(self, film_name:str, series_dominant:bool =True, top_idol:int =0 ) -> None:
+    def __init__(self, film_name:str, film_desc:str = '' ) -> None:
+        self.film_desc = film_desc
         pass
+    def load_categories(self, collect):
+        cnt = len(collect)
+        if cnt  > 0:
+            self.shared_key, self.category_name = collect[0]
+            ic (self.shared_key, self.category_name)
+            if cnt > 1:
+                self.categories = itertools.cycle(collect)
+                xd, yd = next(self.categories)
+                assert xd == self.shared_key
+                assert yd == self.category_name
+                ic (self.series_key)
+    def next_category(self):
+        if self.categories:
+            self.shared_key, self.category_name = next(self.categories)
+            return self.category_name
+        else:
+            return None
+
+
+
 
 
 
 
 class MainScreenLogic:
+
+    def get_film(self, film, series_dominant=False, idol_dominant=0) -> dict:
+        conn = sqlite3.connect(IDP)
+        c = conn.cursor()
+        film_data: dict = dict()
+
+        film_data['film_name'] = film
+        if film not in self.film_desc:
+            return None
+        
+        film_logic = FilmTileLogic(film_name=film, film_desc = self.film_desc[film]  )
+        ic (film_logic.film_desc)
+
+        c.execute('''select distinct i.shared_key 
+            from film_idols fi join idols i on fi.idol_link = i.link 
+            where fi.film_name = ?''', (film,))
+        idols = c.fetchall()
+        conn.close()
+        idolsG = [i[0] for i in idols if i[0]]   
+        series = []
+        if idol_dominant > 0 and idol_dominant in idolsG:
+            idolsG.remove(idol_dominant)
+            idolsG.insert(0, idol_dominant)
+
+        if film in self.film_series:
+            series_key = self.film_series[film]
+            film_logic.series_key = series_key
+            if series_dominant:
+                series.append((-series_key, self.series_name[series_key])  )
+        series += [(i, self.shared_key_name[i]) for i in idolsG]
+        #u = series += idolsG
+        film_logic.load_categories(series)
+        film_data['tile_logic'] = film_logic
+        return film_data
+
+
+
+
     def __init__(self: 'MainScreenLogic'):
         self.mybar = None
         self._collector = None
@@ -50,6 +110,8 @@ class MainScreenLogic:
             rows = cr.fetchall()
             idols = [shared_key[0] for shared_key in rows]
             self.film_ranges[min_film_count] = idols
+
+
 
         query = '''
         select shared_key, name from (select * from series where link not like "%miss%") group by shared_key;
@@ -90,43 +152,34 @@ class MainScreenLogic:
                 # Read each line and strip spaces
                 for line in file:
                     line = line.strip()
-                    i.append(self.get_film(line))
+                    i.append(self.get_film(line, series_dominant=False))
         else:
-            i.append( self.get_film("IPX-551"))
+            i.append( self.get_film("IPX-551", series_dominant=True))
         self.i = i
 
         self.collector.data =  i
 
 
-    def get_film(self, film, series_dominant=True) -> dict:
+    def solo_idols2 (self, min_film_count=10, max_film_count=400):
         conn = sqlite3.connect(IDP)
         c = conn.cursor()
-        film_data: dict = dict()
+        rows = self.film_ranges[min_film_count] # c.fetchall()
+        datas = []
+        for shared_key in rows:
+            idol = self.shared_key_name[shared_key]
+            c.execute(f'''
+                select s.film from solo_cast_films s join films f on film = name where shared_key = {shared_key}''')
+            
 
-        film_data['film_name'] = film
-        film_logic = FilmTileLogic(film_name=film)
-
-        c.execute('''select distinct i.shared_key 
-            from film_idols fi join idols i on fi.idol_link = i.link 
-            where fi.film_name = ?''', (film,))
-        idols = c.fetchall()
-        conn.close()
-        idolsG = [i[0] for i in idols if i[0]]        
-
-        if film in self.film_series:
-            film_logic.series_shared_key = self.film_series[film]
-            if series_dominant:
-                idolsG.insert (0,0)
-        idols = None
-        if idolsG:
-            idols = itertools.cycle(idolsG)
-            shared_key = next(idols)
-            film_logic.idol_shared_key = shared_key
-        if len(idolsG) > 1:
-            film_logic.idols = idols
-        film_data['tile_logic'] = film_logic        
-
-        return film_data
+            films = c.fetchall()
+            if films:
+                film = random.choice(films)[0]
+                datas.append (self.get_film(film))
+                #idols = [shared_key]
+                #print (idols[0][1], description)
+                #datas.append ({'idols': idols,  'description' : self.film_desc[film], 'film_name' : film, 'label' : f"{film} / {idol}"   } )
+        
+        return datas
 
 
 
@@ -155,17 +208,18 @@ class MainScreenLogic:
         rows = self.film_ranges[min_film_count] # c.fetchall()
         datas = []
         for shared_key in rows:
-            idol = self.shared_key_name[shared_key]
+            # idol = self.shared_key_name[shared_key]
             c.execute(f'''
                 select s.film from solo_cast_films s join films f on film = name where shared_key = {shared_key}''')
-            
-
+            ic(shared_key)
             films = c.fetchall()
             if films:
                 film = random.choice(films)[0]
-                idols = [shared_key]
+                datas.append (self.get_film(film))
+                #self.collector.data = datas
+                #idols = [shared_key]
                 #print (idols[0][1], description)
-                datas.append ({'idols': idols,  'description' : self.film_desc[film], 'film_name' : film, 'label' : f"{film} / {idol}"   } )
+                #datas.append ({'idols': idols,  'description' : self.film_desc[film], 'film_name' : film, 'label' : f"{film} / {idol}"   } )
         return datas
 
 
@@ -224,59 +278,41 @@ class MainScreenLogic:
 
 
 
-    #def idols_choice(self: 'MainScreenLogic', shared_key: int, idol_name: str):
-
     def idols_choice(self: 'MainScreenLogic', MyTile):
 
         shared_key = MyTile.shared_key
-        print (shared_key)
-        idol_name = MyTile.series_name
         if shared_key > 0:
-            idol_name = self.shared_key_name[shared_key]
-
-        
-        if shared_key > 0:
+            #            idol_name = self.shared_key_name[shared_key]
             cn = sqlite3.connect(IDP)
             cr = cn.cursor()
             cr.execute(f'''
                 Select distinct f.film_name from film_idols f join idols i on f.idol_link = i.link where i.shared_key = {shared_key}
                 ''')
-            datas = []
-            for film in cr.fetchall():
-                film = film[0]
-                cr.execute(f'''select description from films where name = '{film}' ''')
-                description = cr.fetchone()[0]
-                cr.execute(f'''select distinct i.shared_key from film_idols fi join idols i on i.link = fi.idol_link where fi.film_name = ? ''', (film,))
-                idols = []
-                for idss in cr.fetchall():
-                    
-                    if idss[0]:
-                        idols.append(idss[0])
-                datas.append ({'idols': idols,  'description' : description, 'film_name' : film , 'label' : f"{film} - {self.shared_key_name[idols[0]]}  "} )
+            films_raw = cr.fetchall()
+            films = [i for i, in films_raw]
+            random.shuffle(films)
+            to_process = [self.get_film(film, idol_dominant=shared_key) for film in films]
+            self.collector.data = to_process
+        elif shared_key < 0:
+            series_key = abs(shared_key)
+            self.load_series(series_key)
 
-
-                random.shuffle(datas)
-                self.collector.data = datas
-            cn.close()
-
-        else:
-            datas = []
-            series_shared_key = int (MyTile.series_shared_key)
-            cn = sqlite3.connect(IDB2)
-            cr = cn.cursor()
-
-            cr.execute(f'''
-                       select name from film_series where shared_key = ?;
-            ''', (series_shared_key,))
-            i = []
-            for rows in cr.fetchall():
-                film = rows[0]
-                i += self.get_film(film)
-
-            self.collector.data = i
-            cn.close()
         
+    def load_series(self, series_key):
+        cn = sqlite3.connect(IDB2)
+        cr = cn.cursor()
+        print ("series_keysddsadsddddddddddddddddddddddddddccccccccccccccccccccccccccccc")
+        ic(series_key)
+        cr.execute(f'''
+            select name from film_series where shared_key = ?;
+        ''', (series_key,))
+        ii = cr.fetchall()
+        # if iii:
+        #     ii = random.shuffle(iii)
 
+        self.collector.data = [ self.get_film(rows, series_dominant=True) for rows, in ii]
+        cn.close()
+        
 
     def playme (self, txt1):
         # print (txt1)
@@ -315,62 +351,16 @@ class MainScreenLogic:
                     select name from film_series where shared_key = ?;
                 """, (shared_key,))
                 film_row = c.fetchall()
-                if film_row is not None:
-                    random.shuffle(film_row)
-                    film = film_row[0][0]
-                    print (film, shared_key, count)
-                    idols = [0]
-                    collect.append ({'film_name' : film, 'shared_key' : 0, 'label' : f'{film} -- {self.series_name[shared_key]}',
-                                    'idols' : idols, 
-                                    'series_shared_key' : shared_key,
-                                    'series_name' : self.series_name[shared_key]} )
+                if film_row:
+                    film = random.choice(film_row)
+                    collect.append (self.get_film(film[0], series_dominant=True))
+                    # film = film_row[0][0]
+                    # print (film, shared_key, count)
+                    # idols = [0]
+                    # collect.append ({'film_name' : film, 'shared_key' : 0, 'label' : f'{film} -- {self.series_name[shared_key]}',
+                    #                 'idols' : idols, 
+                    #                 'series_shared_key' : shared_key,
+                    #                 'series_name' : self.series_name[shared_key]} )
 
         self.collector.data = collect
-
-
-    def getFilmData(self, film, idol=None, check_series=False):
-        conn2 = sqlite3.connect(IDP)
-        conn = sqlite3.connect(IDB2)
-        c = conn.cursor()
-        c.execute("select description, series_link, series_name from films where name = ?", (film,))
-        description = c.fetchone()[0]
-        series_link = c.fetchone()[1]
-        series_name = c.fetchone()[2]
-        if series_name is None and check_series:
-            film = MissFilm_msl(name=film)
-
-
-        # q1 = '''
-        # select i.shared_key, count(distinct fi.film_name) c from film_idols fi join idols i on fi.idol_link = i.link group by i.shared_key having shared_key not null and c > 1 order by c desc;
-        # '''
-        # q2 = '''
-        # select fi.film_name, count(distinct i.shared_key) c from film_idols fi join idols i on fi.idol_link = i.link group by fi.film_name having c = 1 and i.shared_key = ?;
-        # '''
-
-        # conn = sqlite3.connect(IDP)
-        # kk = []
-        # cursor = conn.cursor()
-        # cursor.execute(q1)
-        # results = cursor.fetchall()
-        # for i in results:
-        #     shared_key = i[0]
-        #     cursor.execute(q2, (shared_key,))
-        #     results2 = None
-        #     resul = cursor.fetchall()
-        #     if resul:
-        #         results2 = resul[random.randint(0, len(resul)-1)]
-        #     # for e in resul:
-        #     #     #kk.append ( e[0] )
-        #     #     results2 = e
-        #         if results2:
-        #             #print (results2[0], shared_key)
-        #             q3 = "select name from idols where shared_key = ?"
-        #             cursor.execute(q3, (shared_key,))
-        #             name = cursor.fetchone()                   
-        #             kk.append ( [results2[0], name[0]] )
-           
-           
-        # conn.close()
-        # return [{'source': f'{IDD}/{i}.jpg', 'texti' : i, 'act_option': 'idol', 'idol_name' : j } for i, j in kk]
-
-    
+        conn.close()

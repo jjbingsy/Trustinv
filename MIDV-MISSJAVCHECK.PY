@@ -93,3 +93,14 @@ ic(film_ranges[5])
 ic(film_ranges[10])
 
 
+from trustmod.main import MainScreenLogic, FilmTileLogic
+
+i = MainScreenLogic()
+ic (i.get_film("MIRD-197", series_dominant=True, idol_dominant=45))
+
+
+for key, val in i.film_series.items():
+    ic (key, val)
+
+# conn = sqlite3.connect(IDP)
+# cn = conn.cursor()

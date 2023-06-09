@@ -51,28 +51,36 @@ class MyTile (MDSmartTile):
         # ic (MDApp.get_running_app().msl.series_name[self.series_shared_key])
 
     def on_tile_logic(self, *args):
-        if self.tile_logic.series_shared_key > 0:
-            self.disabled_series = False
-        else:
-            self.disabled_series = True
-        if self.tile_logic.idols:
-            self.disabled_multi_idol = False
-        else:
-            self.disabled_multi_idol = True
-        if self.tile_logic.idol_shared_key > 0:
-            self.second_header = MDApp.get_running_app().msl.shared_key_name[self.tile_logic.idol_shared_key]
-        elif self.tile_logic.series_shared_key > 0:
-            self.second_header = MDApp.get_running_app().msl.series_name[self.tile_logic.series_shared_key]
-        else:
-            self.second_header = ''
+        self.second_header = self.tile_logic.category_name
+        self.disabled_series = self.tile_logic.series_key < 1
+        self.disabled_multi_idol = self.tile_logic.categories is None
+        # if self.tile_logic.series_shared_key > 0:
+        #     self.disabled_series = False
+        # else:
+        #     self.disabled_series = True
+        # if self.tile_logic.idols:
+        #     self.disabled_multi_idol = False
+        # else:
+        #     self.disabled_multi_idol = True
+        # if self.tile_logic.idol_shared_key > 0:
+        #     self.second_header = MDApp.get_running_app().msl.shared_key_name[self.tile_logic.idol_shared_key]
+        # elif self.tile_logic.series_shared_key > 0:
+        #     self.second_header = MDApp.get_running_app().msl.series_name[self.tile_logic.series_shared_key]
+        # else:
+        #     self.second_header = ''
 
     def change_idol(self, *args):
-        new_shared_key = next(self.tile_logic.idols)
-        if new_shared_key > 0:
-            self.idol_shared_key = new_shared_key
-            self.second_header = MDApp.get_running_app().msl.shared_key_name[new_shared_key]
-        elif self.tile_logic.series_shared_key > 0:
-            self.second_header = MDApp.get_running_app().msl.series_name[self.tile_logic.series_shared_key]
+        next_cat = self.tile_logic.next_category()
+        if next_cat:
+            self.second_header = next_cat
+            
+        
+        # new_shared_key = next(self.tile_logic.idols)
+        # if new_shared_key > 0:
+        #     self.idol_shared_key = new_shared_key
+        #     self.second_header = MDApp.get_running_app().msl.shared_key_name[new_shared_key]
+        # elif self.tile_logic.series_shared_key > 0:
+        #     self.second_header = MDApp.get_running_app().msl.series_name[self.tile_logic.series_shared_key]
         
         # if self.idols:
         #     self.idol_shared_key = next(self.idols)
@@ -148,8 +156,7 @@ class MyTile (MDSmartTile):
                                                                                 #     self.idol_name = self.series_name
 
     def on_release(self, *args):
-        if self.idol_shared_key > 0 and self.film_name in MDApp.get_running_app().msl.film_desc:
-            MDApp.get_running_app().msl.mybar.title = MDApp.get_running_app().msl.film_desc[self.film_name]
+        MDApp.get_running_app().msl.mybar.title = self.tile_logic.film_desc
         #maybe add description of series
 
 

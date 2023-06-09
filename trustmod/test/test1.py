@@ -33,7 +33,7 @@ else:
 
 
 my_list = [3, 4, 5, 6, 7, 8, 9, 10]
-
+kk = [-2]
 # Remove the element from its current position
 my_list.remove(4)
 
@@ -41,3 +41,10 @@ my_list.remove(4)
 my_list.insert(0, 4)
 
 print(my_list)  # Output: [4, 2, 3, 5]
+
+
+kk += [21, 32]
+if 21 in kk:
+    kk.remove(21)
+    kk.insert(0, 21)
+ic (kk)
