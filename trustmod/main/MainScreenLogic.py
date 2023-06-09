@@ -307,10 +307,13 @@ class MainScreenLogic:
             select name from film_series where shared_key = ?;
         ''', (series_key,))
         ii = cr.fetchall()
+        my_list = [i[0] for i in ii ] 
+        ic (random.shuffle(my_list))
         # if iii:
         #     ii = random.shuffle(iii)
 
-        self.collector.data = [ self.get_film(rows, series_dominant=True) for rows, in ii]
+        # self.collector.data = [ self.get_film(rows, series_dominant=True) for rows, in ii]
+        #ic([ self.get_film(rows, series_dominant=True) for rows, in ii])
         cn.close()
         
 
