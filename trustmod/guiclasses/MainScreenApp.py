@@ -12,6 +12,7 @@ from kivymd.uix.toolbar import MDTopAppBar
 from kivymd.uix.scrollview import MDScrollView
 from kivy.properties import StringProperty, NumericProperty, BooleanProperty
 from kivy.properties import ObjectProperty, ListProperty
+from kivymd.uix.button import MDRaisedButton
 import itertools
 from icecream import ic
 
@@ -28,7 +29,11 @@ class ContentNavigationDrawer(MDScrollView):
     nav_drawer = ObjectProperty()
 
 
-
+class MyButton(MDRaisedButton):
+    label_obj = ObjectProperty(None)
+    text_field = ObjectProperty(None)
+    def on_release(self, *args):
+        self.label_obj.text = self.text_field.text
 
 class MultiIdolsIconButton(MDIconButton):
     pass

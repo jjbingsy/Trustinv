@@ -1,74 +1,51 @@
 from kivy.lang import Builder
-from kivy.properties import ObjectProperty
+from kivy.properties import StringProperty
 
 from kivymd.app import MDApp
-from kivymd.uix.scrollview import MDScrollView
+from kivymd.uix.relativelayout import MDRelativeLayout
 
 KV = '''
-<ContentNavigationDrawer>
+<ClickableTextFieldRound>:
+    size_hint_y: None
+    height: text_field.height
 
-    MDList:
+    MDTextField:
+        id: text_field
+        hint_text: root.hint_text
+        text: root.text
+        password: True
+        icon_left: "key-variant"
 
-        OneLineListItem:
-            text: "Screen 1"
-            on_press:
-                root.nav_drawer.set_state("close")
-                root.screen_manager.current = "scr 1"
-
-        OneLineListItem:
-            text: "Screen 2"
-            on_press:
-                root.nav_drawer.set_state("close")
-                root.screen_manager.current = "scr 2"
+    MDIconButton:
+        icon: "eye-off"
+        pos_hint: {"center_y": .5}
+        pos: text_field.width - self.width + dp(8), 0
+        theme_text_color: "Hint"
+        on_release:
+            self.icon = "eye" if self.icon == "eye-off" else "eye-off"
+            text_field.password = False if text_field.password is True else True
 
 
 MDScreen:
 
-    MDTopAppBar:
-        pos_hint: {"top": 1}
-        elevation: 4
-        title: "MDNavigationDrawer"
-        left_action_items: [["menu", lambda x: nav_drawer.set_state("open")]]
-
-    MDNavigationLayout:
-
-        MDScreenManager:
-            id: screen_manager
-
-            MDScreen:
-                name: "scr 1"
-
-                MDLabel:
-                    text: "Screen 1"
-                    halign: "center"
-
-            MDScreen:
-                name: "scr 2"
-
-                MDLabel:
-                    text: "Screen 2"
-                    halign: "center"
-
-        MDNavigationDrawer:
-            id: nav_drawer
-            radius: (0, 16, 16, 0)
-
-            ContentNavigationDrawer:
-                screen_manager: screen_manager
-                nav_drawer: nav_drawer
+    ClickableTextFieldRound:
+        size_hint_x: None
+        width: "300dp"
+        hint_text: "Password"
+        pos_hint: {"center_x": .5, "center_y": .5}
 '''
 
 
-class ContentNavigationDrawer(MDScrollView):
-    screen_manager = ObjectProperty()
-    nav_drawer = ObjectProperty()
+class ClickableTextFieldRound(MDRelativeLayout):
+    text = StringProperty()
+    hint_text = StringProperty()
+    # Here specify the required parameters for MDTextFieldRound:
+    # [...]
 
 
-class Example(MDApp):
+class Test(MDApp):
     def build(self):
-        self.theme_cls.primary_palette = "Orange"
-        self.theme_cls.theme_style = "Dark"
         return Builder.load_string(KV)
 
 
-Example().run()
+Test().run()

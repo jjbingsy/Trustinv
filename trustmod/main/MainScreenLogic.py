@@ -12,6 +12,8 @@ from trustmod.classes import MissFilm as MissFilm_msl
 
 
 #https://kivy.org/doc/stable/api-kivy.uix.recycleview.html
+#https://kivymd.readthedocs.io/en/0.104.0/components/navigation-drawer/index.html
+#https://kivymd.readthedocs.io/en/1.1.1/components/textfield/index.html
 class FilmTileLogic:
     series_key = 0
     shared_key = 0
@@ -20,7 +22,7 @@ class FilmTileLogic:
 
     def __init__(self, film_name:str, film_desc:str = '' ) -> None:
         self.film_desc = film_desc
-        pass
+
     def load_categories(self, collect):
         cnt = len(collect)
         if cnt  > 0:
@@ -32,15 +34,13 @@ class FilmTileLogic:
                 assert xd == self.shared_key
                 assert yd == self.category_name
                 ic (self.series_key)
+
     def next_category(self):
         if self.categories:
             self.shared_key, self.category_name = next(self.categories)
             return self.category_name
         else:
             return None
-
-
-
 
 
 
@@ -158,25 +158,6 @@ class MainScreenLogic:
         self.i = i
 
         self.collector.data =  i
-
-
-    def solo_idols2 (self, min_film_count=10, max_film_count=400):
-        conn = sqlite3.connect(IDP)
-        c = conn.cursor()
-        rows = self.film_ranges[min_film_count] # c.fetchall()
-        datas = []
-        for shared_key in rows:
-            idol = self.shared_key_name[shared_key]
-            c.execute(f'''
-                select s.film from solo_cast_films s join films f on film = name where shared_key = {shared_key}''')
-            
-
-            films = c.fetchall()
-            if films:
-                film = random.choice(films)[0]
-                datas.append (self.get_film(film))
-        
-        return datas
 
 
 

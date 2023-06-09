@@ -43,6 +43,23 @@ MDScreen:
                                 orientation: 'lr-tb'
                 MDScreen:
                     name: "screen2"
+                    BoxLayout:
+                        orientation: 'vertical'
+                        
+                        MDTextField:
+                            id: my_text_field
+                            hint_text: "Enter something"
+                            
+                        MyButton:
+                            label_obj: my_label
+                            text_field: my_text_field
+                            text: "Display Text"
+                            pos_hint: {"center_x": 0.5}
+
+                        MDLabel:
+                            id: my_label
+                            halign: 'center'
+                        
 
             MDNavigationDrawer:
                 id: nav_drawer
