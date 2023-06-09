@@ -1,47 +1,57 @@
-MDNavigationLayout:
-    MDScreenManager:
-        MDScreen:
-            name: "screen1"
-            MyBoxLayout:
-                orientation: 'vertical'
-                MyBar:
-                    title: "Navigation Drawer"
-                    elevation: 4
-                    pos_hint: {"top": 1}
-                    md_bg_color: "#e7e4c0"
-                    specific_text_color: "#4a4939"
-                    left_action_items:
-                        [['menu', lambda x: nav_drawer.set_state("open")], 
-                        ['menu', lambda x: app.msl.get_random_films_in_series()],
-                        ['menu', lambda x: app.msl.intial_data2() ] ]
-                    right_action_items:
-                        [['star-outline', lambda x: app.msl.intial_data()], 
-                        ['star-outline', lambda x: app.msl.intial_data(min_film_count=5, max_film_count=11)], 
-                        ['star-outline', lambda x: app.msl.intial_data(min_film_count=3, max_film_count=6)], 
-                        ['star', lambda x: app.msl.intial_data(min_film_count=2, max_film_count=4)], 
-                        ['star', lambda x: app.msl.intial_data(min_film_count=1, max_film_count=3)], 
-                        ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)]  ]
-                MyRec:
-                    id: rec
-                    viewclass: 'MyTile'
-                    MDRecycleGridLayout:
-                        id: rgg
-                        padding: ('0dp', '10dp', '0dp', '0dp')
-                        #510, 344
-                        default_size: dp(510), dp(344)
-                        default_size_hint: None, None
-                        spacing: dp(4)
-                        #cols: 5
-                        cols: 5
-                        size_hint_y: None
-                        height: self.minimum_height
-                        orientation: 'lr-tb'
-        MDScreen:
-            name: "screen2"
+MDScreen:
+    MDBoxLayout:
+        orientation: 'vertical'
+        MyBar:
+            title: "Navigation Drawer"
+            elevation: 4
+            pos_hint: {"top": 1}
+            md_bg_color: "#e7e4c0"
+            specific_text_color: "#4a4939"
+            left_action_items:
+                [['menu', lambda x: nav_drawer.set_state("open")], 
+                ['menu', lambda x: app.msl.get_random_films_in_series()],
+                ['menu', lambda x: app.msl.intial_data2() ] ]
+            right_action_items:
+                [['star-outline', lambda x: app.msl.intial_data()], 
+                ['star-outline', lambda x: app.msl.intial_data(min_film_count=5, max_film_count=11)], 
+                ['star-outline', lambda x: app.msl.intial_data(min_film_count=3, max_film_count=6)], 
+                ['star', lambda x: app.msl.intial_data(min_film_count=2, max_film_count=4)], 
+                ['star', lambda x: app.msl.intial_data(min_film_count=1, max_film_count=3)], 
+                ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)]  ]
+        MDNavigationLayout:
 
-    MDNavigationDrawer:
-        id: nav_drawer
-        radius: (0, 16, 16, 0)
+            MDScreenManager:
+                id: screen_manager
+                MDScreen:
+                    name: "screen1"
+                    MyBoxLayout:
+                        orientation: 'vertical'
+                        MyRec:
+                            id: rec
+                            viewclass: 'MyTile'
+                            MDRecycleGridLayout:
+                                id: rgg
+                                padding: ('0dp', '0dp', '0dp', '0dp')
+                                #510, 344
+                                default_size: dp(510), dp(344)
+                                default_size_hint: None, None
+                                spacing: dp(4)
+                                #cols: 5
+                                cols: 3
+                                size_hint_y: None
+                                height: self.minimum_height
+                                orientation: 'lr-tb'
+                MDScreen:
+                    name: "screen2"
+
+            MDNavigationDrawer:
+                id: nav_drawer
+                radius: (0, 16, 16, 0)
+
+                ContentNavigationDrawer:
+                    screen_manager: screen_manager
+                    nav_drawer: nav_drawer
+
         
 
 <myTile>:
@@ -57,7 +67,7 @@ MDNavigationLayout:
     MDIconButton:
         on_release: app.msl.idols_choice(root.tile_logic)
         icon: "heart-outline"    
-    MyLabel:
+    OneLineListItem:
         text: f"{root.film_name} - {root.second_header}"
     MDIconButton:
         icon: "play-outline" 
@@ -71,5 +81,24 @@ MDNavigationLayout:
         disabled: root.disabled_series
         on_release: app.msl.load_series(root.tile_logic.series_key  )
         
+<ContentNavigationDrawer>
 
+    MDList:
 
+        OneLineListItem:
+            text: "Screen 1"
+            on_press:
+                root.nav_drawer.set_state("close")
+                root.screen_manager.current = "screen1"
+
+        OneLineListItem:
+            text: "Screen 2"
+            on_press:
+                root.nav_drawer.set_state("close")
+                root.screen_manager.current = "screen2"
+
+        OneLineListItem:
+            text: "Top Idols"
+            on_press: 
+                root.nav_drawer.set_state("close")
+                app.msl.intial_data()

@@ -175,9 +175,6 @@ class MainScreenLogic:
             if films:
                 film = random.choice(films)[0]
                 datas.append (self.get_film(film))
-                #idols = [shared_key]
-                #print (idols[0][1], description)
-                #datas.append ({'idols': idols,  'description' : self.film_desc[film], 'film_name' : film, 'label' : f"{film} / {idol}"   } )
         
         return datas
 
@@ -196,19 +193,9 @@ class MainScreenLogic:
             having count(distinct i.shared_key) = 1; 
             ''')
         conn.commit()
-        # c.execute(f'''
-        #     select i.shared_key, i.name 
-        #     from film_idols fi join idols i on fi.idol_link = i.link 
-        #     group by i.shared_key 
-        #     having count(distinct fi.film_name) > {min_film_count} 
-        #     and count(distinct fi.film_name) < {max_film_count} 
-        #     and i.shared_key is not null 
-        #     order by count(distinct fi.film_name) desc;
-        #     ''')
-        rows = self.film_ranges[min_film_count] # c.fetchall()
+        rows = self.film_ranges[min_film_count]
         datas = []
         for shared_key in rows:
-            # idol = self.shared_key_name[shared_key]
             c.execute(f'''
                 select s.film from solo_cast_films s join films f on film = name where shared_key = {shared_key}''')
             ic(shared_key)
@@ -216,18 +203,9 @@ class MainScreenLogic:
             if films:
                 film = random.choice(films)[0]
                 datas.append (self.get_film(film))
-                #self.collector.data = datas
-                #idols = [shared_key]
-                #print (idols[0][1], description)
-                #datas.append ({'idols': idols,  'description' : self.film_desc[film], 'film_name' : film, 'label' : f"{film} / {idol}"   } )
         return datas
 
 
-
-
-                #datas.append({'shared_key': shared_key, 'films': films})
-
-            #yield {'shared_key': shared_key[0], 'films': films}
 
 
 
@@ -301,19 +279,14 @@ class MainScreenLogic:
     def load_series(self, series_key):
         cn = sqlite3.connect(IDB2)
         cr = cn.cursor()
-        print ("series_keysddsadsddddddddddddddddddddddddddccccccccccccccccccccccccccccc")
-        ic(series_key)
         cr.execute(f'''
             select name from film_series where shared_key = ?;
         ''', (series_key,))
         ii = cr.fetchall()
         my_list = [i[0] for i in ii ] 
-        ic (random.shuffle(my_list))
-        # if iii:
-        #     ii = random.shuffle(iii)
-
-        # self.collector.data = [ self.get_film(rows, series_dominant=True) for rows, in ii]
-        #ic([ self.get_film(rows, series_dominant=True) for rows, in ii])
+        random.shuffle(my_list)
+        self.mybar.title = self.series_name[series_key]
+        self.collector.data = [ self.get_film(rows, series_dominant=True) for rows in my_list]
         cn.close()
         
 
@@ -344,12 +317,10 @@ class MainScreenLogic:
         select shared_key, count(name) cnt from film_series group by shared_key having cnt > 1 order by cnt desc;
         """)
         series_counts = c.fetchall()
-
         collect = []
         for shared_key, count in series_counts:
             #shared_key = int(shared_key_raw
             if shared_key in self.series_name:
-                print (shared_key, count)
                 c.execute("""
                     select name from film_series where shared_key = ?;
                 """, (shared_key,))
@@ -357,13 +328,7 @@ class MainScreenLogic:
                 if film_row:
                     film = random.choice(film_row)
                     collect.append (self.get_film(film[0], series_dominant=True))
-                    # film = film_row[0][0]
-                    # print (film, shared_key, count)
-                    # idols = [0]
-                    # collect.append ({'film_name' : film, 'shared_key' : 0, 'label' : f'{film} -- {self.series_name[shared_key]}',
-                    #                 'idols' : idols, 
-                    #                 'series_shared_key' : shared_key,
-                    #                 'series_name' : self.series_name[shared_key]} )
-
+        
+        self.mybar.title = f'Random Films in Series'
         self.collector.data = collect
         conn.close()
