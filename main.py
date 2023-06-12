@@ -1,11 +1,14 @@
 from trustmod.guiclasses import MainScreenApp
 from icecream import ic
+from trustmod.main import load_film_series
 #set-up mutiple idols
 # git update-index --assume-unchanged  trustmod/vars/env_001.py
 
 if __name__ == '__main__':
+    ic.disable()
     ic("test_modulekivy1.py")
     MainScreenApp().run()
+
     '''
 PRED-120
 JUL-494

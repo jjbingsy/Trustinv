@@ -48,23 +48,33 @@ class FilmTileLogic:
 class MainScreenLogic:
 
     def get_film(self, film, series_dominant=False, idol_dominant=0) -> dict:
-        conn = sqlite3.connect(IDP)
-        c = conn.cursor()
-        film_data: dict = dict()
 
+        idolsG = list()
+        film_logic = None
+        film_data: dict = dict()
         film_data['film_name'] = film
         if film not in self.film_desc:
             return None
         
-        film_logic = FilmTileLogic(film_name=film, film_desc = self.film_desc[film]  )
-        ic (film_logic.film_desc)
+        if film in self.films:
+            film_logic, idolsG = self.films[film]
+        else:
+            conn = sqlite3.connect(IDP)
+            c = conn.cursor()
+            film_logic = FilmTileLogic(film_name=film, film_desc = self.film_desc[film]  )
 
-        c.execute('''select distinct i.shared_key 
-            from film_idols fi join idols i on fi.idol_link = i.link 
-            where fi.film_name = ?''', (film,))
-        idols = c.fetchall()
-        conn.close()
-        idolsG = [i[0] for i in idols if i[0]]   
+            c.execute('''select distinct i.shared_key 
+                from film_idols fi join idols i on fi.idol_link = i.link 
+                where fi.film_name = ?''', (film,))
+            idols = c.fetchall()
+            conn.close()
+            idolsG = [i[0] for i in idols if i[0]]   
+            self.films[film] = (film_logic, idolsG)
+
+
+
+
+
         series = []
         if idol_dominant > 0 and idol_dominant in idolsG:
             idolsG.remove(idol_dominant)
@@ -81,20 +91,45 @@ class MainScreenLogic:
         film_data['tile_logic'] = film_logic
         return film_data
 
+    def load_page (self, page):
+        if self.current:
+            self.previous.append(self.current)
+        self.current = page
+        self.collector.data = page
+        del self.forward[:]
+
+    def load_previous(self):
+        if self.previous:
+            self.forward.append(self.current)
+            self.current = self.previous.pop()
+            self.collector.data = self.current
+    
+    def load_forward(self):
+        if self.forward:
+            self.previous.append(self.current)
+            self.current = self.forward.pop()
+            self.collector.data = self.current
+
 
 
 
     def __init__(self: 'MainScreenLogic'):
+        self.films = dict()
+        self.previous = list()
+        self.forward = list()
+        self.current = None
         self.mybar = None
         self._collector = None
         self.container = None
-        
         conn = sqlite3.connect(IDB2)
         c = conn.cursor()
         cn = sqlite3.connect(IDP)
         cr = cn.cursor()
     
         range_tup = [(10, 400), (5,11), (3, 6), (2, 4), (1, 3), (0, 2) ]
+
+
+
 
         self.film_ranges = dict()
         for min_film_count, max_film_count in range_tup:     
@@ -138,7 +173,7 @@ class MainScreenLogic:
         self._collector = value
 
     def intial_data(self, min_film_count=10, max_film_count=400):
-        self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count)
+        self.load_page( self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count))
 
 
     def intial_data2(self, file_path = './stuff/include1.txt'):
@@ -155,9 +190,7 @@ class MainScreenLogic:
                     i.append(self.get_film(line, series_dominant=False))
         else:
             i.append( self.get_film("IPX-551", series_dominant=True))
-        self.i = i
-
-        self.collector.data =  i
+        self.load_page( i)
 
 
 
@@ -251,7 +284,7 @@ class MainScreenLogic:
             films = [i for i, in films_raw]
             random.shuffle(films)
             to_process = [self.get_film(film, idol_dominant=shared_key) for film in films]
-            self.collector.data = to_process
+            self.load_page( to_process)
         elif shared_key < 0:
             series_key = abs(shared_key)
             self.load_series(series_key)
@@ -267,7 +300,7 @@ class MainScreenLogic:
         my_list = [i[0] for i in ii ] 
         random.shuffle(my_list)
         self.mybar.title = self.series_name[series_key]
-        self.collector.data = [ self.get_film(rows, series_dominant=True) for rows in my_list]
+        self.load_page([ self.get_film(rows, series_dominant=True) for rows in my_list])
         cn.close()
         
 
@@ -311,5 +344,5 @@ class MainScreenLogic:
                     collect.append (self.get_film(film[0], series_dominant=True))
         
         self.mybar.title = f'Random Films in Series'
-        self.collector.data = collect
+        self.load_page(collect)
         conn.close()

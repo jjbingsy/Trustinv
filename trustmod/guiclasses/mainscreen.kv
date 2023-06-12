@@ -17,7 +17,9 @@ MDScreen:
                 ['star-outline', lambda x: app.msl.intial_data(min_film_count=3, max_film_count=6)], 
                 ['star', lambda x: app.msl.intial_data(min_film_count=2, max_film_count=4)], 
                 ['star', lambda x: app.msl.intial_data(min_film_count=1, max_film_count=3)], 
-                ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)]  ]
+                ['star', lambda x: app.msl.intial_data(min_film_count=0, max_film_count=2)],  
+                ['arrow-left', lambda x: app.msl.load_previous()], ['arrow-right', lambda x: app.msl.load_forward()] ]
+            
         MDNavigationLayout:
 
             MDScreenManager:
@@ -37,7 +39,7 @@ MDScreen:
                                 default_size_hint: None, None
                                 spacing: dp(4)
                                 #cols: 5
-                                cols: 3
+                                cols: 5
                                 size_hint_y: None
                                 height: self.minimum_height
                                 orientation: 'lr-tb'
@@ -58,6 +60,37 @@ MDScreen:
 
                         MDLabel:
                             id: my_label
+                            halign: 'center'
+                MDScreen:
+                    name: "screen3"
+                    BoxLayout:
+                        orientation: 'vertical'
+                        
+                        MDTextField:
+                            id: my_text_field2
+                            hint_text: "Enter something"
+                            
+                        MyButton:
+                            label_obj: my_label2
+                            text_field: my_text_field2
+                            text: "Display Text"
+                            pos_hint: {"center_x": 0.5}
+
+                        MDLabel:
+                            id: my_label2
+                            halign: 'center'
+                        MDTextField:
+                            id: my_text_field3
+                            hint_text: "Enter something"
+                            
+                        MyButton:
+                            label_obj: my_label3
+                            text_field: my_text_field3
+                            text: "Display Text"
+                            pos_hint: {"center_x": 0.5}
+
+                        MDLabel:
+                            id: my_label3
                             halign: 'center'
                         
 
@@ -113,6 +146,12 @@ MDScreen:
             on_press:
                 root.nav_drawer.set_state("close")
                 root.screen_manager.current = "screen2"
+
+        OneLineListItem:
+            text: "Screen 3"
+            on_press:
+                root.nav_drawer.set_state("close")
+                root.screen_manager.current = "screen3"
 
         OneLineListItem:
             text: "Top Idols"

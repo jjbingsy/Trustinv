@@ -4,6 +4,7 @@ import sqlite3
 
 from ..vars.env_001 import IDOLSDB_PATH, FILMSOURCES_PATH, SIMLINK_DIRECTORY, IMAGE_DIRECTORY, MEDIA_DIRECTORIES, USER_AGENT_GOOGLE
 from ..classes import GuruFilm, JavFilm, MissFilm, Idol
+from .initiate_individual_film_series import load_film_series
 
 
 
@@ -124,12 +125,11 @@ def sortFilms():
                 
                     #    input ("Error: " + film + " " + idol.link)
 
-
-
-
         max_idols_cnt = max(idols_cnt)
         cursor.execute("""
         UPDATE films SET description = ?, idols_max_count = ? where name = ?;
         """, (desc, max_idols_cnt, film))
         conn.commit()
+        load_film_series(film)
     conn.close()
+    
