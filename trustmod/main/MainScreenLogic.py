@@ -5,10 +5,10 @@ from pathlib import Path
 from icecream import ic
 import itertools
 import threading
-from trustmod.classes import MissFilm as Guru
+from ..classes import MissFilm as Guru
 
-from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, MEDIA_DIRECTORIES as MDD, SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2
-from trustmod.classes import MissFilm as MissFilm_msl
+from ..vars.env_001 import IDOLSDB_PATH as IDP,  SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2, MPV_DIRECTORY as MPV, MPV_PLATFORM_OPTIONS as MPO
+from ..classes import MissFilm as MissFilm_msl
 
 
 #https://kivy.org/doc/stable/api-kivy.uix.recycleview.html
@@ -305,17 +305,19 @@ class MainScreenLogic:
         
 
     def playme (self, txt1):
-        # print (txt1)
-        t = ["C:/Users/bing/Desktop/mpv/mpv.exe", "--fs", "--fs-screen=0", "--loop-playlist" ]
-        i = "C:/Users/bing/Desktop/mpv/mpv.exe --fs --fs-screen=0 --loop-playlist" 
-        files = Path(SDD).glob ( txt1.lower() + "*")
-        #print (files)
+        print (txt1)
+        # print (txt1) on windows 
+        '''
+        MPV_DIRECTORY = "C:/Users/bing/Desktop/mpv/mpv.exe"
+        MPV_PLATFORM_OPTIONS = "--fs-screen=0"
         
+        '''
+
+        t = [MPV, "--fs", MPO, "--loop-playlist" ]
+        files = Path(SDD).glob ( txt1.upper() + "*")
         for ss2 in files:
-            print (ss2)
             t.append(ss2)
-            i = i + " " + str(ss2)
-            
+
         subprocess.run(t)
 
     def playme2 (self, film_name):              
