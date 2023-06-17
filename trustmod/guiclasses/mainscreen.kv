@@ -158,3 +158,8 @@ MDScreen:
             on_press: 
                 root.nav_drawer.set_state("close")
                 app.msl.intial_data()
+        OneLineListItem:
+            text: "New Films"
+            on_press: 
+                root.nav_drawer.set_state("close")
+                app.msl.intial_data2(file_path = './stuff/new_films.txt')

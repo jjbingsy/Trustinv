@@ -187,7 +187,9 @@ class MainScreenLogic:
                 # Read each line and strip spaces
                 for line in file:
                     line = line.strip()
-                    i.append(self.get_film(line, series_dominant=False))
+                    new_film = self.get_film(line, series_dominant=False)
+                    if new_film:
+                        i.append(new_film)
         else:
             i.append( self.get_film("IPX-551", series_dominant=True))
         self.load_page( i)
