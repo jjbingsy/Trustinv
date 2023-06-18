@@ -182,6 +182,7 @@ class MainScreenLogic:
         # Check if the file exists
         f = Path(file_path)
         if f.exists():
+            print (f"my file_p[ath] is {file_path}")
             # Open the file
             with open(f, 'r') as file:
                 # Read each line and strip spaces

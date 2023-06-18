@@ -2,9 +2,11 @@ from datetime import datetime
 from fuzzywuzzy import fuzz
 import sqlite3
 
-from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD
-from trustmod.classes import Idol_struct
-from trustmod.utility import consolidate_idols_withoutconn_idol_struct as consolidate_idols
+
+from ..vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD
+from ..classes import Idol_struct
+from ..utility import consolidate_idols_withoutconn_idol_struct as consolidate_idols
+
 
 def compare_idol_v2 (idol1, idol2):
     if idol1.shared_key and idol2.shared_key and idol1.shared_key == idol2.shared_key:
@@ -77,61 +79,7 @@ def youpunk(idols, counter=0):
 
 
 
-
-def deprecated_piece_shit():
-
-
-    conn = sqlite3.connect(IDP)
-    cursor = conn.cursor()
-
-
-    # Query to get film names with 3 film sources and all 3 having equal idol_counts > 0
-    query = """
-    SELECT films.name, film_sources.idols_count 
-    FROM films
-    INNER JOIN film_sources ON films.name = film_sources.film_name
-    GROUP BY films.name
-    HAVING COUNT(film_sources.source_link) > 1 
-    """
-    query2 = """
-    SELECT film_sources.release_date
-    FROM films
-    INNER JOIN film_sources ON films.name = film_sources.film_name
-    WHERE FILMS.name = ?
-    """
-
-    # Execute the query and fetch film names
-    cursor.execute(query)
-    film_names = cursor.fetchall()
-
-    # Loop through film names
-    for film_name_tuple in film_names:
-        film_name = film_name_tuple[0]
-        #print(f"Film: {film_name}")
-        release_dates = cursor.execute(query2, (film_name,)).fetchall()
-        max_days = 0
-        for d1 in release_dates:
-            for d2 in release_dates:
-                
-                    max_days = max(max_days, abs((datetime.strptime(d1[0], "%Y-%m-%dT%H:%M:%S").date() - datetime.strptime(d2[0], "%Y-%m-%dT%H:%M:%S").date()).days))
-                    #print (d1[0], d2[0])
-        if True:
-            print (f"{film_name} {max_days}")
-            query_idols = """
-                SELECT idols.*, idols.rowid
-                FROM idols
-                INNER JOIN film_idols ON idols.link = film_idols.idol_link
-                WHERE film_idols.film_name = ?
-                """
-
-                # Execute the query and fetch associated idols
-            cursor.execute(query_idols, (film_name,))
-            idols = [Idol_struct(idol) for idol in cursor.fetchall() ]
-
-            youpunk (idols, 0 )
-
-
-def pick_film(film_name):
+def add_idol_shared_key_from(film_name):
 
 
     conn = sqlite3.connect(IDP)
@@ -165,6 +113,3 @@ def pick_film(film_name):
 
         youpunk (idols, 0 )
         conn.close()
-
-#pick_film ("PPPE-135") done
-pick_film ("PRED-492")

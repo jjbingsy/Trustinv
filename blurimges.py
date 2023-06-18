@@ -1,6 +1,6 @@
 from skimage import io, util
+#import matplotlib.pyplot as plt
 import numpy as np
-import matplotlib.pyplot as plt
 from PIL import Image, ImageOps, ImageFilter
 from pathlib import Path
 from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, MEDIA_DIRECTORIES as MDD, SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2
@@ -9,20 +9,20 @@ images = Path(IDD)
 negative = Path("C:\\Users\\Security\\documents\\josephsy\\github\\dat\\negative")
 blur = Path("C:\\Users\\Security\\documents\\josephsy\\github\\dat\\blur")
 noise = Path("C:\\Users\\Security\\documents\\josephsy\\github\\dat\\noise2")
-colors = Path("C:\\Users\\Security\\documents\\josephsy\\github\\dat\\colors2")
+colors = Path("./stuff")
 
 
-# for image in blur.iterdir():
-#     newNoise = colors / (image.stem + '.jpg')
-#     print (newNoise)
+newNoise = colors / 'blank.jpg'
+print (newNoise)
 #     # Generate a single random RGB value
-#     random_color = np.random.randint(0, 256, 3, dtype=np.uint8)
+random_color = np.random.randint(0, 256, 3, dtype=np.uint8)
 
 #     # Create a 512x512 array filled with the random RGB value
-#     random_array = np.full((512, 512, 3), random_color, dtype=np.uint8)
+random_array = np.full((512, 512, 3), random_color, dtype=np.uint8)
 
 #     # Create an image from the array
-#     img = Image.fromarray(random_array)
+img = Image.fromarray(random_array)
+img.save(newNoise)
 
 
 

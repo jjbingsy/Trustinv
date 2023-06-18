@@ -71,7 +71,7 @@ def setTrans():
     conn.close()
 
 def sortFilms():
-    setTrans()
+    #setTrans()
     conn = sqlite3.connect(IDOLSDB_PATH)
 
     cursor = conn.cursor()
@@ -130,6 +130,62 @@ def sortFilms():
         UPDATE films SET description = ?, idols_max_count = ? where name = ?;
         """, (desc, max_idols_cnt, film))
         conn.commit()
-        load_film_series(film)
     conn.close()
     
+
+def sortFilm(film, sources):
+    #setTrans()
+    conn = sqlite3.connect(IDOLSDB_PATH)
+
+    cursor = conn.cursor()
+    desc = ""
+    cntNotStored = 0
+    cntTo = 0
+    cursor.execute("""
+    INSERT or ignore INTO films (name)
+    VALUES (?);
+    """, (film,))
+    conn.commit()
+
+    idols_cnt = [-1, -1, -1]
+    
+    for index, source in enumerate (sources):
+        
+        if source.content:
+            idols_cnt [index] = len(source.idols)
+            desc = source.description
+            rdate = source.release_date
+            if rdate is None:
+                rdate = parse("1900-01-01")
+
+            cursor.execute("""
+                    INSERT OR IGNORE INTO film_sources (source_link, film_name, source_id, idols_count, release_date)
+                    VALUES (?, ?, ?, ?, ?);
+                    """, (source.film_link, film, index, len(source.idols), rdate.isoformat() ))
+            conn.commit()
+
+
+
+            for idol in source.idols:
+                cursor.execute("""
+                    INSERT OR IGNORE INTO idols (link, source_id, name)
+                    VALUES (?, ?, ?);
+                    """, (idol.link, index,  idol.name))
+                conn.commit()
+                print (film, idol.link)
+                cursor.execute("""
+                INSERT OR IGNORE INTO film_idols (film_name, idol_link)
+                VALUES (?, ?);
+                """, (film, idol.link))
+                conn.commit()
+            
+                #    input ("Error: " + film + " " + idol.link)
+
+    max_idols_cnt = max(idols_cnt)
+    cursor.execute("""
+    UPDATE films SET description = ?, idols_max_count = ? where name = ?;
+    """, (desc, max_idols_cnt, film))
+    conn.commit()
+    conn.close()
+    
+        
