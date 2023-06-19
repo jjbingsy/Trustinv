@@ -1,4 +1,3 @@
-from .checkInFilms import checkInFilms
 from .checkInFilms import EntyFilms
 from .checkInFilms import checkVideoFiles
 from .sortFilms import sortFilms

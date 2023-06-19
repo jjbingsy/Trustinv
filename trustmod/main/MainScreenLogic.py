@@ -3,6 +3,7 @@ import random
 import subprocess
 from pathlib import Path
 from icecream import ic
+from ..main import checkVideoFiles
 import itertools
 import threading
 from ..classes import MissFilm as Guru
@@ -47,6 +48,17 @@ class FilmTileLogic:
 
 class MainScreenLogic:
 
+    def add_and_refresh(self):
+        checkVideoFiles()
+        self.initial_clear()
+        print('refreshed')
+
+    def add_new_videos(self):
+        thread = threading.Thread(target=self.add_and_refresh)
+        thread.start()
+
+        #        checkVideoFiles()
+
     def get_film(self, film, series_dominant=False, idol_dominant=0) -> dict:
 
         idolsG = list()
@@ -54,7 +66,7 @@ class MainScreenLogic:
         film_data: dict = dict()
         film_data['film_name'] = film
         if film not in self.film_desc:
-            return None
+            return dict()
         
         if film in self.films:
             film_logic, idolsG = self.films[film]
@@ -110,10 +122,7 @@ class MainScreenLogic:
             self.current = self.forward.pop()
             self.collector.data = self.current
 
-
-
-
-    def __init__(self: 'MainScreenLogic'):
+    def initial_clear(self):
         self.films = dict()
         self.previous = list()
         self.forward = list()
@@ -168,6 +177,9 @@ class MainScreenLogic:
         cr.close()
         conn.close()
 
+
+    def __init__(self: 'MainScreenLogic'):
+        self.initial_clear()
     # @collector.setter    
     def collector(self, value):
         self._collector = value

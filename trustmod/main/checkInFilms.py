@@ -130,70 +130,70 @@ def checkVideoFiles():
 
 
 
-def checkInFilms():
-    sym_files = set()
-    # Read the file and process each line
-    dest = Path(SIMLINK_DIRECTORY)
-    for line in MEDIA_DIRECTORIES:
+# def checkInFilms():
+#     sym_files = set()
+#     # Read the file and process each line
+#     dest = Path(SIMLINK_DIRECTORY)
+#     for line in MEDIA_DIRECTORIES:
 
-        raw_path = line.strip()
-        paths = Path (raw_path)
-        suffixrep = ":/"
-        if platform.system() == "Linux":
-            suffixrep = "/"
-        suffix = "-" + raw_path.replace(suffixrep, '_') 
-        for file in paths.iterdir():
-            if file.suffix.lower() in ['.mp4', '.wmv', '.mkv', '.avi']:
-                newfile = dest / (parseTitle(file.stem) + suffix + file.suffix)
-                if not newfile.exists():
-                    print (file)
-                    newfile.symlink_to(file)
-                    print ("good", newfile)
-                else:
-                    nn = ""
-                    cnt = 0
-                    while True:
-                        cnt += 1
-                        new_filename = parseTitle(file.stem) + suffix + f"_{cnt}{file.suffix}"
-                        nn = dest / new_filename
-                        if not nn.exists():
-                            break
-                    nn.symlink_to(file)
-                    print ("badto good", nn)         
-                sym_files.add(parseTitle( file.stem).upper())
+#         raw_path = line.strip()
+#         paths = Path (raw_path)
+#         suffixrep = ":/"
+#         if platform.system() == "Linux":
+#             suffixrep = "/"
+#         suffix = "-" + raw_path.replace(suffixrep, '_') 
+#         for file in paths.iterdir():
+#             if file.suffix.lower() in ['.mp4', '.wmv', '.mkv', '.avi']:
+#                 newfile = dest / (parseTitle(file.stem) + suffix + file.suffix)
+#                 if not newfile.exists():
+#                     print (file)
+#                     newfile.symlink_to(file)
+#                     print ("good", newfile)
+#                 else:
+#                     nn = ""
+#                     cnt = 0
+#                     while True:
+#                         cnt += 1
+#                         new_filename = parseTitle(file.stem) + suffix + f"_{cnt}{file.suffix}"
+#                         nn = dest / new_filename
+#                         if not nn.exists():
+#                             break
+#                     nn.symlink_to(file)
+#                     print ("badto good", nn)         
+#                 sym_files.add(parseTitle( file.stem).upper())
         
                         
-    # for file in sym_files:
-    #     print (file)
+#     # for file in sym_files:
+#     #     print (file)
 
 
-    directory = Path( IMAGE_DIRECTORY)
+#     directory = Path( IMAGE_DIRECTORY)
 
-    # List comprehension to process the files in the directory
-    processed_files = {parseTitle(file.stem) for file in directory.iterdir() if file.is_file()}
+#     # List comprehension to process the files in the directory
+#     processed_files = {parseTitle(file.stem) for file in directory.iterdir() if file.is_file()}
 
-    newfiles = sym_files - processed_files
+#     newfiles = sym_files - processed_files
 
-    # Print the results
-    for result in newfiles:
-        print (result)
-        #print(result)
-        shkd2 = GuruFilm(name=result, store=True)
-        shkd = MissFilm(name=result, store=True)
-        sssd = JavFilm(name=result, store=True)
-        print ("result newfiles", result)
-        if shkd.content and shkd.get_image_content()[0]:
-            image = shkd.image_content
-            newfile = directory / (result + '.jpg')
-            print (newfile)
-            with open(newfile, 'wb') as f:
-                f.write(image)
-        elif shkd2.content and shkd2.get_image_content()[0]:
-            image = shkd2.image_content
-            newfile = directory / (result + '.jpg')
-            print (newfile)
-            with open(newfile, 'wb') as f:
-                f.write(image)
-        else:
-            print (result, 'no image')
+#     # Print the results
+#     for result in newfiles:
+#         print (result)
+#         #print(result)
+#         shkd2 = GuruFilm(name=result, store=True)
+#         shkd = MissFilm(name=result, store=True)
+#         sssd = JavFilm(name=result, store=True)
+#         print ("result newfiles", result)
+#         if shkd.content and shkd.get_image_content()[0]:
+#             image = shkd.image_content
+#             newfile = directory / (result + '.jpg')
+#             print (newfile)
+#             with open(newfile, 'wb') as f:
+#                 f.write(image)
+#         elif shkd2.content and shkd2.get_image_content()[0]:
+#             image = shkd2.image_content
+#             newfile = directory / (result + '.jpg')
+#             print (newfile)
+#             with open(newfile, 'wb') as f:
+#                 f.write(image)
+#         else:
+#             print (result, 'no image')
 
