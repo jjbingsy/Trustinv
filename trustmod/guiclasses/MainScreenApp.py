@@ -7,7 +7,7 @@ from kivymd.uix.recycleview import MDRecycleView as RecycleView
 from kivymd.uix.button import MDRectangleFlatButton
 from kivymd.uix.button import MDIconButton
 from kivymd.uix.imagelist.imagelist import MDSmartTile
-from kivymd.uix.list.list import OneLineListItem
+from kivymd.uix.list.list import OneLineListItem, MDList
 from kivymd.uix.toolbar import MDTopAppBar
 from kivymd.uix.scrollview import MDScrollView
 from kivy.properties import StringProperty, NumericProperty, BooleanProperty
@@ -15,11 +15,13 @@ from kivy.properties import ObjectProperty, ListProperty
 from kivymd.uix.button import MDRaisedButton
 import itertools
 from icecream import ic
-
+from pathlib import Path
 
 
 from ..main import MainScreenLogic, FilmTileLogic
 from trustmod.vars.env_001 import IDOLSDB_PATH as IDP, IMAGE_DIRECTORY as IDD, MEDIA_DIRECTORIES as MDD, SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2
+
+
 
 
 
@@ -44,7 +46,30 @@ class MyBar(MDTopAppBar):
         MDApp.get_running_app().msl.mybar = self
         super().__init__(**kwargs)
 
+class MyMDList(MDList):
+    mydrawer = ObjectProperty(None)
+    def add_file (self, file_name):
+        self.mydrawer.nav_drawer.set_state("close")
+        self.msl.intial_data2 (file_path=file_name)
+        print (f"add_file: {file_name}")
 
+    def __init__(self, **kwargs):
+        self.msl = MDApp.get_running_app().msl
+        self.msl.mdlist = self
+        super().__init__(**kwargs)
+
+        files = Path("./stuff").glob("*.txt")
+        for file in files:
+
+            self.add_widget(OneLineListItem(
+                text=str(file),
+                on_release=lambda x: self.add_file(file)
+                
+
+                ) 
+                
+                            )
+            print (f"fileeeeeeeeeeeeee: {file}")
 
 class MyTile (MDSmartTile):
     tile_logic = ObjectProperty(None)

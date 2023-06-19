@@ -130,6 +130,7 @@ class MainScreenLogic:
         self.mybar = None
         self._collector = None
         self.container = None
+        self.mdlist = None
         conn = sqlite3.connect(IDB2)
         c = conn.cursor()
         cn = sqlite3.connect(IDP)

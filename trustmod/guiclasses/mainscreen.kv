@@ -133,9 +133,9 @@ MDScreen:
         on_release: app.msl.load_series(root.tile_logic.series_key  )
         
 <ContentNavigationDrawer>
-
-    MDList:
-
+    id: content_drawer1
+    MyMDList:
+        mydrawer: content_drawer1
         OneLineListItem:
             text: "Screen 1"
             on_press:
