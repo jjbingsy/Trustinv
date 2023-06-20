@@ -47,6 +47,25 @@ class FilmTileLogic:
 
 
 class MainScreenLogic:
+    bookmark_file = "stuff/include1.txt"
+
+    def bookmark(self, film):
+        i = set()
+        i.add(film)
+        with open(self.bookmark_file, 'r') as file:
+            for line in file:
+                i.add(line.strip())   
+                print (i)             
+        with open(self.bookmark_file, 'w') as file:
+            for filmd in i:
+                file.write(filmd)
+                file.write('\n')
+        print (f'bookmarked {film}')
+
+
+
+
+
 
     def add_and_refresh(self):
         checkVideoFiles()
@@ -189,7 +208,11 @@ class MainScreenLogic:
         self.load_page( self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count))
 
 
-    def intial_data2(self, file_path = './stuff/include1.txt'):
+    def intial_data2(self, file_path = ""):
+        if file_path == "":
+            file_path = self.bookmark_file
+        else:
+            self.bookmark_file = file_path
         #self.collector.data = self.solo_idols(min_film_count=min_film_count, max_film_count=max_film_count)
         i = []
         # Check if the file exists

@@ -16,6 +16,7 @@ from kivymd.uix.button import MDRaisedButton
 import itertools
 from icecream import ic
 from pathlib import Path
+from functools import partial
 
 
 from ..main import MainScreenLogic, FilmTileLogic
@@ -48,8 +49,10 @@ class MyBar(MDTopAppBar):
 
 class MyMDList(MDList):
     mydrawer = ObjectProperty(None)
-    def add_file (self, file_name):
+    def add_file (self, *args):
+        file_name = args[0]
         self.mydrawer.nav_drawer.set_state("close")
+        #print (f"add_file: {args[0]}")
         self.msl.intial_data2 (file_path=file_name)
         print (f"add_file: {file_name}")
 
@@ -60,16 +63,10 @@ class MyMDList(MDList):
 
         files = Path("./stuff").glob("*.txt")
         for file in files:
-
-            self.add_widget(OneLineListItem(
-                text=str(file),
-                on_release=lambda x: self.add_file(file)
-                
-
-                ) 
-                
-                            )
-            print (f"fileeeeeeeeeeeeee: {file}")
+            olli = OneLineListItem(text=str(file))
+            olli.bind(on_press=partial(self.add_file, file))
+            self.add_widget(olli)
+            #print (f"fileeeeeeeeeeeeee: {file}")
 
 class MyTile (MDSmartTile):
     tile_logic = ObjectProperty(None)

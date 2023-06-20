@@ -131,7 +131,12 @@ MDScreen:
         icon: "menu"
         disabled: root.disabled_series
         on_release: app.msl.load_series(root.tile_logic.series_key  )
-        
+    MDIconButton:
+        icon: "plus"
+        on_release: app.msl.bookmark(root.film_name  )
+
+
+
 <ContentNavigationDrawer>
     id: content_drawer1
     MyMDList:
@@ -163,9 +168,9 @@ MDScreen:
             text: "New Films"
             on_press: 
                 root.nav_drawer.set_state("close")
-                app.msl.intial_data2(file_path = './stuff/new_films.txt')
+                app.msl.intial_data2(file_path = 'stuff/hh.txt')
         OneLineListItem:
             text: "New Filmsxxcx"
             on_press: 
                 root.nav_drawer.set_state("close")
-                app.msl.intial_data2(file_path = './stuff/include1.txt')
+                app.msl.intial_data2(file_path = 'stuff/include1.txt')
