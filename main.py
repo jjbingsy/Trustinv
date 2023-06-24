@@ -7,6 +7,7 @@ from trustmod.main import load_film_series
 if __name__ == '__main__':
     ic.disable()
     ic("test_modulekivy1.py")
+
     MainScreenApp()  .  run()
 
     '''

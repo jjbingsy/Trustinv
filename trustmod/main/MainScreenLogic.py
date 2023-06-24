@@ -7,6 +7,8 @@ from ..main import checkVideoFiles
 import itertools
 import threading
 from ..classes import MissFilm as Guru
+import multiprocessing
+import time
 
 from ..vars.env_001 import IDOLSDB_PATH as IDP,  SIMLINK_DIRECTORY as SDD, IDOLS2DB_PATH as IDB2, MPV_DIRECTORY as MPV, MPV_PLATFORM_OPTIONS as MPO
 from ..classes import MissFilm as MissFilm_msl
@@ -43,6 +45,22 @@ class FilmTileLogic:
         else:
             return None
 
+
+def playmeOut (txt1):
+    print (txt1)
+    # print (txt1) on windows 
+    '''
+    MPV_DIRECTORY = "C:/Users/bing/Desktop/mpv/mpv.exe"
+    MPV_PLATFORM_OPTIONS = "--fs-screen=0"
+    
+    '''
+
+    t = [MPV, "--fs", MPO, "--loop-playlist" ]
+    files = Path(SDD).glob ( txt1.upper() + "*")
+    for ss2 in files:
+        t.append(ss2)
+
+    subprocess.run(t)
 
 
 
@@ -343,7 +361,7 @@ class MainScreenLogic:
         cn.close()
         
 
-    def playme (self, txt1):
+    def playme2 (self, txt1):
         print (txt1)
         # print (txt1) on windows 
         '''
@@ -357,11 +375,18 @@ class MainScreenLogic:
         for ss2 in files:
             t.append(ss2)
 
-        subprocess.run(t)
+        #subprocess.run(t)
+        subprocess.Popen(t , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
 
-    def playme2 (self, film_name):              
-        thread = threading.Thread(target=self.playme, args=(film_name,))
-        thread.start()
+    def playme3 (self, film_name):              
+        process = multiprocessing.Process(target=playmeOut, args=[film_name])
+        process.start()
+        #time.sleep(1)
+        #@process.join()
+        #process.terminate()
+
+        # thread = threading.Thread(target=self.playme, args=(film_name,))
+        # thread.start()
 
     def get_random_films_in_series(self):
         conn = sqlite3.connect(IDB2)
