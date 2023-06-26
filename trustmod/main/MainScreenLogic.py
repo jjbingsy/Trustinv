@@ -361,7 +361,7 @@ class MainScreenLogic:
         cn.close()
         
 
-    def playme2 (self, txt1):
+    def playme (self, txt1):
         print (txt1)
         # print (txt1) on windows 
         '''
@@ -375,10 +375,10 @@ class MainScreenLogic:
         for ss2 in files:
             t.append(ss2)
 
-        #subprocess.run(t)
-        subprocess.Popen(t , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
+        subprocess.run(t)
+        #subprocess.Popen(t , stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=False)
 
-    def playme3 (self, film_name):              
+    def playme2 (self, film_name):              
         process = multiprocessing.Process(target=playmeOut, args=[film_name])
         process.start()
         #time.sleep(1)
