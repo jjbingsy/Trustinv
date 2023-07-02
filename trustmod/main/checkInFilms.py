@@ -91,6 +91,12 @@ def symlink_toe(path):
 
 
 def checkVideoFiles():
+    bookmarked = set()
+    bookmarked_path = Path ("stuff/added_films.txt")
+    with open(bookmarked_path, 'r') as f:
+        for line in f:
+            if line.strip():
+                bookmarked.add(line.strip())
     videos = set()
     sym_files = set()
     dest = Path(SIMLINK_DIRECTORY)
@@ -123,11 +129,14 @@ def checkVideoFiles():
         ic (film)
         film = EntyFilms(film)
         if film.isValidFilm():
+            bookmarked.add(film.film)
             ic(film.storeImage())
             sortFilm(film.film, film.film_sources)
             load_idol_shared_key(film.film)
             load_series(film.film)
-
+    with open(bookmarked_path, 'w') as f:
+        for line in bookmarked:
+            f.write(f"{line}\n")    
 
 
 # def checkInFilms():
