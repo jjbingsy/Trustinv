@@ -68,22 +68,8 @@ class MainScreenLogic:
     bookmark_file = "stuff/include1.txt"
 
     def bookmark(self, film):
-        i = set()
-        i.add(film)
-        with open(self.bookmark_file, 'r') as file:
-            for line in file:
-                i.add(line.strip())   
-                print (i)             
-        with open(self.bookmark_file, 'w') as file:
-            for filmd in i:
-                file.write(filmd)
-                file.write('\n')
-        print (f'bookmarked {film}')
-
-
-
-
-
+        with open(self.bookmark_file, 'a') as file:
+            print (film, file=file)
 
     def add_and_refresh(self):
         checkVideoFiles()

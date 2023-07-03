@@ -93,10 +93,10 @@ def symlink_toe(path):
 def checkVideoFiles():
     bookmarked = set()
     bookmarked_path = Path ("stuff/added_films.txt")
-    with open(bookmarked_path, 'r') as f:
-        for line in f:
-            if line.strip():
-                bookmarked.add(line.strip())
+    # with open(bookmarked_path, 'r') as f:
+    #     for line in f:
+    #         if line.strip():
+    #             bookmarked.add(line.strip())
     videos = set()
     sym_files = set()
     dest = Path(SIMLINK_DIRECTORY)
@@ -134,9 +134,12 @@ def checkVideoFiles():
             sortFilm(film.film, film.film_sources)
             load_idol_shared_key(film.film)
             load_series(film.film)
-    with open(bookmarked_path, 'w') as f:
+    with open(bookmarked_path, 'a') as f:
         for line in bookmarked:
-            f.write(f"{line}\n")    
+            print (line, file=f )
+            #f.write(f"{line}\n") 
+
+    
 
 
 # def checkInFilms():
