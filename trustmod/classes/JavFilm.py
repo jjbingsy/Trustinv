@@ -149,7 +149,8 @@ class JavFilm (Film):
         href = f"https://www.javdatabase.com/movies/{name.lower()}/"
         page = get_content(href, parseTitle(name.upper()), store=store, force=force)
         soup = bs4(page, "lxml")
-        return soup.find('tr', class_='moviecovertb'), soup, page
+        #return soup.find('tr', class_='moviecovertb'), soup, page
+        return soup.find('div', class_='entry-content'), soup, page
 
 
     def __init__(self, name=None, store=True, force=False):
