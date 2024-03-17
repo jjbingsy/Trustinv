@@ -15,8 +15,9 @@ with open('stuff/nodesc.txt', 'r') as file:
         cursor.execute("SELECT content FROM filmsources WHERE name = ? and url like '%database%'", (film,))
         soup = bs4(cursor.fetchone ()[0], "lxml")
         desc = soup.h1.text.strip()
-        cr.execute("update films set description = ? where name = ?", (desc, film))
-conn2.commit()
+        print(film, desc)
+#         cr.execute("update films set description = ? where name = ?", (desc, film))
+# conn2.commit()
 
 
 
