@@ -67,10 +67,10 @@ class JavFilm (Film):
                 desc = description.next_sibling.text.strip()
             except:
                 pass
-            try:
-                desc = description.next_sibling.next_sibling.text.strip()
-            except:
-                pass
+                try:
+                    desc = description.next_sibling.next_sibling.text.strip()
+                except:
+                    desc = name.strip()
             seriesTitle = soup.find('td', text='Series: ')
             #stitle = seriesTitle.next_sibling.text.strip()
             #print ("STITLE", stitle)
@@ -149,7 +149,8 @@ class JavFilm (Film):
         href = f"https://www.javdatabase.com/movies/{name.lower()}/"
         page = get_content(href, parseTitle(name.upper()), store=store, force=force)
         soup = bs4(page, "lxml")
-        return soup.find('tr', class_='moviecovertb'), soup, page
+        #return soup.find('tr', class_='moviecovertb'), soup, page
+        return soup.find('div', class_='entry-content'), soup, page
 
 
     def __init__(self, name=None, store=True, force=False):
@@ -168,9 +169,6 @@ class JavFilm (Film):
         page = None
         image_source = None
         soup = None
-        if "MIDV-" in name:
-            alt_name = name + "-2"
-            image_source, soup, page = self.checkSource(alt_name, store=store, force=force)
         if not image_source:
             image_source, soup, page = self.checkSource(name, store=store, force=force)
         rdate = None
@@ -185,16 +183,23 @@ class JavFilm (Film):
             image_link = image_source.find('img')['src']
             name = soup.h1.text
             film_link = f"https://www.javdatabase.com/movies/{name.lower()}/"
-            description = soup.find('td', text='Translated Title:')
             #print ("XXX", description.text)
             try:
+                description = soup.find('td', text='Translated Title:')
                 desc = description.next_sibling.text.strip()
             except:
-                pass
-            try:
-                desc = description.next_sibling.next_sibling.text.strip()
-            except:
-                pass
+                try:
+                    desc = description.next_sibling.next_sibling.text.strip()
+                except:
+                    try:
+                        description = soup.find('h1')
+                        desc = description.text.strip()
+                    except:
+                        desc = "No description available"
+            # try:
+            #     desc = description.next_sibling.next_sibling.text.strip()
+            # except:
+            #     pass
             seriesTitle = soup.find('td', text='Series: ')
             #stitle = seriesTitle.next_sibling.text.strip()
             #print ("STITLE", stitle)

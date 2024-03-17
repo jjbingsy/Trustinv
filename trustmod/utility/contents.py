@@ -21,8 +21,6 @@ def get_content(url, name, store=True, force=False):
     cursor = conn.cursor()
 
     working_url = url
-    if "https://missav.com/en/" in url and "MIDV" in name:
-        pass
 
     # Check if the URL exists in the table
     result = None

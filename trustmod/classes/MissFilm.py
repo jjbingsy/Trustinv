@@ -84,7 +84,7 @@ class MissFilm (Film):
             super().__init__(image_link=image_link, film_name=name, description=desc, series_name=series_name, series_link=series_link, film_link=film_link, release_date=rdate)
 
             # Idols must be added after the init has been called because the empty list is initialized on self.idols.
-            idols = soup.find_all('a', {'href': re.compile(f"https://missav.com/en/actresses/")}, class_="text-nord13 font-medium")
+            idols = soup.find_all('a', {'href': re.compile(f"/actresses/")}, class_="text-nord13 font-medium")
             for idol in idols:
                 self.add_idol(Idol(idol.string, link=idol["href"]))
 
@@ -112,9 +112,6 @@ class MissFilm (Film):
         soup = None
         page = None
 
-        if "MIDV-" in name:
-            alt_name = name + "-2"
-            image_source, soup, page = self.checkSource(alt_name, store=store, force=force)
         if not image_source:
             image_source, soup, page = self.checkSource(name, store=store, force=force)
 
@@ -154,7 +151,7 @@ class MissFilm (Film):
             super().__init__(image_link=image_link, film_name=name, description=desc, series_name=series_name, series_link=series_link, film_link=film_link, release_date=rdate)
 
             # Idols must be added after the init has been called because the empty list is initialized on self.idols.
-            idols = soup.find_all('a', {'href': re.compile(f"https://missav.com/en/actresses/")}, class_="text-nord13 font-medium")
+            idols = soup.find_all('a', {'href': re.compile(f"/actresses/")}, class_="text-nord13 font-medium")
             for idol in idols:
                 self.add_idol(Idol(idol.string, link=idol["href"]))
 
